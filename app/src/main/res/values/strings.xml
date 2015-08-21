@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">RadarBeacon</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_start_menu">StartMenuActivity</string>
+    <string name="button_start_connected">New Button</string>
+    <string name="button_start_unconnected">New Button</string>
+    <string name="dialog_title_select_devices">Select devices</string>
+    <string name="title_activity_connected_main">ConnectedMainActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

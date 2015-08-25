@@ -6,16 +6,16 @@ package edu.kit.teco.radarbeacon.evaluation;
 public class Sample {
 
     private long time;
-    private double azimuth;
+    private float azimuth;
     private int rssi;
 
-    public Sample(double azimuth, int rssi, long time) {
+    public Sample(float azimuth, int rssi, long time) {
         this.azimuth = azimuth;
         this.rssi = rssi;
         this.time = time;
     }
 
-    public double getAzimuth() {
+    public float getAzimuth() {
         return azimuth;
     }
 

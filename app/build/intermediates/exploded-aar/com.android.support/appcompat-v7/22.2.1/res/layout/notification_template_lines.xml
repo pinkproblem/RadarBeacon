@@ -24,7 +24,6 @@
               android:paddingTop="2dp"
               android:paddingBottom="2dp"
     >
-
     <LinearLayout
         android:id="@+id/line1"
         android:layout_width="fill_parent"
@@ -45,7 +44,6 @@
             android:fadingEdge="horizontal"
             android:layout_weight="1"
             />
-
         <include
             layout="@layout/notification_template_part_time"
             android:id="@+id/time"
@@ -55,7 +53,6 @@
             android:layout_weight="0"
             android:visibility="gone"
             />
-
         <include
             layout="@layout/notification_template_part_chronometer"
             android:id="@+id/chronometer"
@@ -81,7 +78,6 @@
         android:ellipsize="marquee"
         android:visibility="gone"
         />
-
     <LinearLayout
         android:id="@+id/line3"
         android:layout_width="fill_parent"

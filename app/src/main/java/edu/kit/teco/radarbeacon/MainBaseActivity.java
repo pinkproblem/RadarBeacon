@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import java.util.HashMap;
 
@@ -36,11 +37,14 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
         measureFragment = new MeasureFragment();
         resultFragment = new ResultFragment();
 
+        //activate the measure fragment
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         currentFragment = measureFragment;
         fragmentTransaction.add(R.id.main_container, currentFragment);
         fragmentTransaction.commit();
+        //as long as the app is measuring, the screen should not turn off
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -97,6 +101,12 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
         fragmentTransaction.replace(R.id.main_container, currentFragment);
         fragmentTransaction.commit();
 
-
+        //dont forget to release the wakelock
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+        });
     }
 }

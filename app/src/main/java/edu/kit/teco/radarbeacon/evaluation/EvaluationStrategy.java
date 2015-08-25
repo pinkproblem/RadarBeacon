@@ -1,13 +1,33 @@
 package edu.kit.teco.radarbeacon.evaluation;
 
 /**
- * Created by Iris on 19.07.2015.
+ * Strategy to calculate a directional result our of samples.
  */
 public interface EvaluationStrategy {
 
+    /**
+     * Add a sample to the already existing set.
+     *
+     * @param s the sample
+     * @throws IllegalArgumentException @see addSample(double azimuth, int rssi, long time)
+     */
     public void addSample(Sample s);
 
-    public void addSample(double azimuth, int rssi, long time);
+    /**
+     * Add a sample to the already existing set.
+     *
+     * @param azimuth rotation angle in rad; must be between -Pi and Pi
+     * @param rssi    Received signal strength indicator; must be <=0
+     * @param time    time stamp of receival; must be >= 0
+     * @throws IllegalArgumentException if the conditions above aren't met
+     */
+    public void addSample(float azimuth, int rssi, long time);
 
-    public double calculate();
+    /**
+     * Calculates the resulting azimuth value out of all added samples.
+     *
+     * @throws InsufficientInputException if there were not enough values to calculate, or
+     *                                    something else went really really wrong
+     */
+    public float calculate() throws InsufficientInputException;
 }

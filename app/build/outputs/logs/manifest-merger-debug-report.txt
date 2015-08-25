@@ -2,7 +2,7 @@
 manifest
 ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:2:1-45:12
 	package
-		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:3:5-39
+		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:3:11-45
 		INJECTED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml
 	android:versionName
@@ -14,29 +14,29 @@ ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidM
 		INJECTED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml
 uses-feature#android.hardware.bluetooth_le
-ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:5:5-7:35
+ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:5:5-7:34
 	android:required
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:7:9-32
 	android:name
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:6:9-53
 uses-feature#android.hardware.sensor.accelerometer
-ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:8:5-10:35
+ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:8:5-10:34
 	android:required
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:10:9-32
 	android:name
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:9:9-61
 uses-feature#android.hardware.sensor.compass
-ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:11:5-13:35
+ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:11:5-13:34
 	android:required
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:13:9-32
 	android:name
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:12:9-55
 uses-permission#android.permission.BLUETOOTH
-ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:15:5-68
+ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:15:5-67
 	android:name
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:15:22-65
 uses-permission#android.permission.BLUETOOTH_ADMIN
-ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:16:5-74
+ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:16:5-73
 	android:name
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:16:22-71
 application
@@ -70,11 +70,11 @@ ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidM
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
 ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:32:13-36:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:33:17-69
+ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:33:17-68
 	android:name
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:33:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:35:17-77
+ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:35:17-76
 	android:name
 		ADDED from C:\Users\Iris\AndroidStudioProjects\RadarBeacon\app\src\main\AndroidManifest.xml:35:27-74
 activity#edu.kit.teco.radarbeacon.ConnectedMainActivity

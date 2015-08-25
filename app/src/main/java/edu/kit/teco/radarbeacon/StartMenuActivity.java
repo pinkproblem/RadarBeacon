@@ -84,14 +84,39 @@ public class StartMenuActivity extends AppCompatActivity {
     }
 
     public void startConnected(View view) {
-        Intent intent = new Intent(this, ConnectedMainActivity.class);
-        //add found devices
-        intent.putExtra(EXTRA_DEVICES, devices);
-        startActivity(intent);
+        if (!btAdapter.isEnabled()) {
+            showEnableBluetoothRequest();
+        }
+
+        final ArrayList<BluetoothDevice> selectedDevices = new ArrayList<>();
+
+        //show a new device selection dialog; when it returns save selected devices and pass them
+        // to new activity
+        SelectDeviceDialog dialog = SelectDeviceDialog.getInstance(new SelectDeviceDialog.OnConfirmSelectionListener() {
+            @Override
+            public void onConfirmSelection(ArrayList<BluetoothDevice> selection) {
+                selectedDevices.addAll(selection);
+                Intent intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
+                //add selected devices
+                intent.putExtra(EXTRA_DEVICES, selectedDevices);
+                startActivity(intent);
+            }
+        }, devices);
+
+        dialog.show(getFragmentManager(), "selectdevice");
+
     }
 
     public void startUnconnected(View view) {
+        if (!btAdapter.isEnabled()) {
+            showEnableBluetoothRequest();
+        }
+    }
 
+    private void showEnableBluetoothRequest() {
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        //TODO maybe restart scan start
+        startActivityForResult(enableBtIntent, 0);
     }
 
     BluetoothAdapter.LeScanCallback scanCallback = new BluetoothAdapter.LeScanCallback() {

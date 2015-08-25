@@ -1,13 +1,19 @@
 package edu.kit.teco.radarbeacon;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -16,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
+import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
 import edu.kit.teco.radarbeacon.evaluation.MovingAverageEvaluation;
 
 public class ConnectedMainActivity extends MainBaseActivity {
@@ -34,6 +41,11 @@ public class ConnectedMainActivity extends MainBaseActivity {
     private ArrayList<BluetoothGatt> gatts;
     private Handler readRssiHandler;
     private HashMap<BluetoothDevice, EvaluationStrategy> evaluation;
+
+    //connection counter
+    private int connectedDevices;
+
+    private Dialog connectingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +69,12 @@ public class ConnectedMainActivity extends MainBaseActivity {
 
         //clear gatts to be sure and start connecting to every passed device
         gatts.clear();
+        connectedDevices = 0;
         for (BluetoothDevice device : devices) {
             gatts.add(device.connectGatt(this, true, gattCallback));
         }
+
+        showConnectingDialog();
     }
 
     @Override
@@ -78,17 +93,9 @@ public class ConnectedMainActivity extends MainBaseActivity {
 
     private void startScan() {
 
-        //TODO this will fail hard when both first calls fail
         gatts.get(0).readRemoteRssi();
         //skip after a certain delay time if there was no result, and scan the next device
-        Runnable skipRunnable = new Runnable() {
-            @Override
-            public void run() {
-                //Start next device in queue
-                BluetoothGatt sndnextGatt = getNextGatt(gatts.get(0));
-                sndnextGatt.readRemoteRssi();
-            }
-        };
+        Runnable skipRunnable = new SkipRunnable(gatts.get(0));
         readRssiHandler.postDelayed(skipRunnable, INTERRUPT_DELAY);
     }
 
@@ -105,8 +112,12 @@ public class ConnectedMainActivity extends MainBaseActivity {
         //push results to fragment
         HashMap<BluetoothDevice, Float> results = new HashMap<>();
         for (BluetoothDevice device : evaluation.keySet()) {
-            double azimuthRes = evaluation.get(device).calculate();
-            results.put(device, (float) azimuthRes);
+            try {
+                double azimuthRes = evaluation.get(device).calculate();
+                results.put(device, (float) azimuthRes);
+            } catch (InsufficientInputException e) {
+                e.printStackTrace();
+            }
         }
         resultFragment.updateResults(results);
     }
@@ -152,6 +163,37 @@ public class ConnectedMainActivity extends MainBaseActivity {
         ev.addSample(azimuth, rssi, time);
     }
 
+    private void showConnectingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+
+        builder.setView(inflater.inflate(R.layout.connect_dialog, null));
+        connectingDialog = builder.create();
+        connectingDialog.setCanceledOnTouchOutside(false);
+        // handle back button
+        connectingDialog.setOnKeyListener(new Dialog.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface arg0, int keyCode,
+                                 KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    connectingDialog.dismiss();
+                    Intent intent = new Intent(ConnectedMainActivity.this,
+                            StartMenuActivity.class);
+                    startActivity(intent);
+                }
+                return true;
+            }
+        });
+
+        connectingDialog.show();
+    }
+
+    private void hideConnectionDialog() {
+        if (connectingDialog != null) {
+            connectingDialog.hide();
+        }
+    }
+
     BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
 
         // Connection state changed.
@@ -160,8 +202,19 @@ public class ConnectedMainActivity extends MainBaseActivity {
             super.onConnectionStateChange(gatt, status, newState);
 
             if (newState == BluetoothGatt.STATE_CONNECTED) {
-                gatt.readRemoteRssi();
+                connectedDevices++;
+                //start scan if all devices connected successfully
+                if (connectedDevices == devices.size()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            hideConnectionDialog();
+                        }
+                    });
+                    startScan();
+                }
             } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
+                connectedDevices--;
             }
 
         }
@@ -173,6 +226,12 @@ public class ConnectedMainActivity extends MainBaseActivity {
 
             //mainly removes the skipRunnable
             readRssiHandler.removeCallbacksAndMessages(null);
+
+            if (currentFragment != measureFragment) {
+                //obviously this call somehow sneaked through even though it shouldnt, so we can
+                // skip right away
+                return;
+            }
 
             BluetoothDevice device = gatt.getDevice();
 
@@ -188,14 +247,7 @@ public class ConnectedMainActivity extends MainBaseActivity {
             readRssiHandler.postDelayed(runnable, RSSI_DELAY / devices.size());
 
             //skip after a certain delay time if there was no result, and scan the next device
-            Runnable skipRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    //Start next device in queue
-                    BluetoothGatt sndnextGatt = getNextGatt(nextGatt);
-                    sndnextGatt.readRemoteRssi();
-                }
-            };
+            Runnable skipRunnable = new SkipRunnable(nextGatt);
             readRssiHandler.postDelayed(skipRunnable, INTERRUPT_DELAY);
 
             //for some mysterious reasons, the rssi scan sometimes returns 127, which is not a
@@ -210,4 +262,28 @@ public class ConnectedMainActivity extends MainBaseActivity {
         }
 
     };
+
+    /**
+     * A runnable responsible for starting a rssi scan for the next device in the queue, in case
+     * the current scan doesnt return after a certain time.
+     */
+    class SkipRunnable implements Runnable {
+
+        //the gatt that is running the scan, which should be interrupted in case of no response
+        private BluetoothGatt gatt;
+
+        SkipRunnable(BluetoothGatt gatt) {
+            this.gatt = gatt;
+        }
+
+        @Override
+        public void run() {
+            //Start next device in queue
+            BluetoothGatt nextGatt = getNextGatt(gatt);
+            nextGatt.readRemoteRssi();
+            //also add a skip runnable for the next scan, in case it doesnt answer too
+            SkipRunnable nextSkip = new SkipRunnable(nextGatt);
+            readRssiHandler.postDelayed(nextSkip, INTERRUPT_DELAY);
+        }
+    }
 }

@@ -2,7 +2,6 @@
 <resources>
     <!-- From: file:/usr/local/google/buildbot/repo_clients/https___googleplex-android.googlesource.com_a_platform_manifest.git/lmp-mr1-supportlib-release/frameworks/support/v7/appcompat/res/values-v14/styles_base_text.xml -->
     <eat-comment/>
-
     <style name="Base.TextAppearance.AppCompat.Button">
         <item name="android:textSize">@dimen/abc_text_size_button_material</item>
         <item name="android:textAllCaps">true</item>
@@ -10,11 +9,8 @@
     </style>
     <!-- From: file:/usr/local/google/buildbot/repo_clients/https___googleplex-android.googlesource.com_a_platform_manifest.git/lmp-mr1-supportlib-release/frameworks/support/v7/appcompat/res/values-v14/themes_base.xml -->
     <eat-comment/>
-
     <style name="Platform.AppCompat" parent="Platform.V14.AppCompat"/>
-
     <style name="Platform.AppCompat.Light" parent="Platform.V14.AppCompat.Light"/>
-
     <style name="Platform.V14.AppCompat" parent="Platform.V11.AppCompat">
         <item name="android:actionModeSelectAllDrawable">?actionModeSelectAllDrawable</item>
 
@@ -25,7 +21,6 @@
             @dimen/abc_list_item_padding_horizontal_material
         </item>
     </style>
-
     <style name="Platform.V14.AppCompat.Light" parent="Platform.V11.AppCompat.Light">
         <item name="android:actionModeSelectAllDrawable">?actionModeSelectAllDrawable</item>
 
@@ -38,16 +33,11 @@
     </style>
     <!-- From: file:/usr/local/google/buildbot/repo_clients/https___googleplex-android.googlesource.com_a_platform_manifest.git/lmp-mr1-supportlib-release/frameworks/support/v7/appcompat/res/values-v14/styles.xml -->
     <eat-comment/>
-
     <style name="TextAppearance.StatusBar.EventContent" parent="@android:style/TextAppearance.StatusBar.EventContent"/>
-
     <style name="TextAppearance.StatusBar.EventContent.Info"/>
-
     <style name="TextAppearance.StatusBar.EventContent.Line2">
         <item name="android:textSize">@dimen/notification_subtext_size</item>
     </style>
-
     <style name="TextAppearance.StatusBar.EventContent.Time"/>
-
     <style name="TextAppearance.StatusBar.EventContent.Title" parent="@android:style/TextAppearance.StatusBar.EventContent.Title"/>
 </resources>

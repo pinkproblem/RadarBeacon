@@ -111,6 +111,10 @@ public class StartMenuActivity extends AppCompatActivity {
         if (!btAdapter.isEnabled()) {
             showEnableBluetoothRequest();
         }
+
+        Intent intent = new Intent(StartMenuActivity.this, UnconnectedMainActivity.class);
+        intent.putExtra(EXTRA_DEVICES, devices);
+        startActivity(intent);
     }
 
     private void showEnableBluetoothRequest() {

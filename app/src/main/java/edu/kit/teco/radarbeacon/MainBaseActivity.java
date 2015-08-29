@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,8 @@ import java.util.HashMap;
 
 import edu.kit.teco.radarbeacon.compass.CompassManager;
 import edu.kit.teco.radarbeacon.compass.RotationChangeListener;
+import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
+import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
 
 public class MainBaseActivity extends AppCompatActivity implements RotationChangeListener, MeasureFragment.OnMeasureCompleteListener {
 
@@ -26,6 +29,7 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
     protected ResultFragment resultFragment;
 
     protected ArrayList<BluetoothDevice> devices;
+    protected HashMap<BluetoothDevice, EvaluationStrategy> evaluation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,15 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
         return azimuth;
     }
 
+    protected void addSample(BluetoothDevice device, int rssi) {
+        EvaluationStrategy ev = evaluation.get(device);
+        float azimuth = getAzimuth();
+        long time = SystemClock.uptimeMillis();
+
+        ev.addSample(azimuth, rssi, time);
+    }
+
+
     @Override
     public void onMeasureComplete() {
         //there are enough values for an evaluation, so change to result fragment
@@ -113,5 +126,17 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
         });
+
+        //push results to fragment
+        HashMap<BluetoothDevice, Float> results = new HashMap<>();
+        for (BluetoothDevice device : evaluation.keySet()) {
+            try {
+                float azimuthRes = evaluation.get(device).calculate();
+                results.put(device, azimuthRes);
+            } catch (InsufficientInputException e) {
+                e.printStackTrace();
+            }
+        }
+        resultFragment.updateResults(results);
     }
 }

@@ -20,7 +20,8 @@ public class MeasureFragment extends Fragment {
     private static final String EXTRA_DEVICE_COUNT = "fragment_extra_device_count";
 
     private static final int NUMBER_OF_SEGMENTS = 6;
-    private static final int MIN_VALUES_PER_SEGMENT = 3;//and per device!
+    //TODO testing value
+    private static final int MIN_VALUES_PER_SEGMENT = 1;//and per device!
 
     //the activity that gets the call for a completed measurement
     private OnMeasureCompleteListener measureListener;

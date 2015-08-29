@@ -39,7 +39,7 @@ public class ConnectedMainActivity extends MainBaseActivity {
 
     private ArrayList<BluetoothGatt> gatts;
     private Handler readRssiHandler;
-    private HashMap<BluetoothDevice, EvaluationStrategy> evaluation;
+
 
     //connection counter
     private int connectedDevices;
@@ -106,18 +106,6 @@ public class ConnectedMainActivity extends MainBaseActivity {
         stopScan();
 
         super.onMeasureComplete();
-
-        //push results to fragment
-        HashMap<BluetoothDevice, Float> results = new HashMap<>();
-        for (BluetoothDevice device : evaluation.keySet()) {
-            try {
-                double azimuthRes = evaluation.get(device).calculate();
-                results.put(device, (float) azimuthRes);
-            } catch (InsufficientInputException e) {
-                e.printStackTrace();
-            }
-        }
-        resultFragment.updateResults(results);
     }
 
     @Override
@@ -151,14 +139,6 @@ public class ConnectedMainActivity extends MainBaseActivity {
             next = 0;//start first if end of queue
         }
         return gatts.get(next);
-    }
-
-    private void addSample(BluetoothDevice device, int rssi) {
-        EvaluationStrategy ev = evaluation.get(device);
-        float azimuth = getAzimuth();
-        long time = SystemClock.uptimeMillis();
-
-        ev.addSample(azimuth, rssi, time);
     }
 
     private void showConnectingDialog() {

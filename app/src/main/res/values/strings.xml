@@ -15,4 +15,5 @@
     <string name="start_scan">Start</string>
     <string name="cancel">Cancel</string>
     <string name="device_dialog_empty">No devices found</string>
+    <string name="title_activity_unconnected_main">UnconnectedMainActivity</string>
 </resources>

@@ -40,6 +40,14 @@
             android:label="@string/title_activity_connected_main"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".UnconnectedMainActivity"
+            android:label="@string/title_activity_unconnected_main"
+            android:parentActivityName=".StartMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.kit.teco.radarbeacon.StartMenuActivity"/>
+        </activity>
     </application>
 
 </manifest>

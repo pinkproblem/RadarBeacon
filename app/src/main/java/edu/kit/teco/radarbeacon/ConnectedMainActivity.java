@@ -37,7 +37,6 @@ public class ConnectedMainActivity extends MainBaseActivity {
      */
     public static final int INTERRUPT_DELAY = 100;
 
-    private ArrayList<BluetoothDevice> devices;
     private ArrayList<BluetoothGatt> gatts;
     private Handler readRssiHandler;
     private HashMap<BluetoothDevice, EvaluationStrategy> evaluation;
@@ -52,7 +51,6 @@ public class ConnectedMainActivity extends MainBaseActivity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
 
-        devices = (ArrayList<BluetoothDevice>) getIntent().getSerializableExtra(StartMenuActivity.EXTRA_DEVICES);
         gatts = new ArrayList<>();
         readRssiHandler = new Handler();
 
@@ -71,7 +69,7 @@ public class ConnectedMainActivity extends MainBaseActivity {
         gatts.clear();
         connectedDevices = 0;
         for (BluetoothDevice device : devices) {
-            gatts.add(device.connectGatt(this, false, gattCallback));
+            gatts.add(device.connectGatt(this, true, gattCallback));
         }
 
         showConnectingDialog();

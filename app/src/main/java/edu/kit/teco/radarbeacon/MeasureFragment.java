@@ -31,7 +31,7 @@ public class MeasureFragment extends Fragment {
 
     ArrayList<TextView> texts;
 
-    public MeasureFragment getInstance(int numberOfDevices) {
+    public static MeasureFragment getInstance(int numberOfDevices) {
         MeasureFragment instance = new MeasureFragment();
 
         Bundle args = new Bundle();

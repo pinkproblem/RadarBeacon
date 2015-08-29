@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.kit.teco.radarbeacon.compass.CompassManager;
@@ -24,6 +25,8 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
     protected MeasureFragment measureFragment;
     protected ResultFragment resultFragment;
 
+    protected ArrayList<BluetoothDevice> devices;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +37,9 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
         //register for rotation updates
         compassManager.registerRotationListener(this);
 
-        measureFragment = new MeasureFragment();
+        devices = (ArrayList<BluetoothDevice>) getIntent().getSerializableExtra(StartMenuActivity.EXTRA_DEVICES);
+
+        measureFragment = MeasureFragment.getInstance(devices.size());
         resultFragment = new ResultFragment();
 
         //activate the measure fragment

@@ -71,7 +71,7 @@ public class ConnectedMainActivity extends MainBaseActivity {
         gatts.clear();
         connectedDevices = 0;
         for (BluetoothDevice device : devices) {
-            gatts.add(device.connectGatt(this, true, gattCallback));
+            gatts.add(device.connectGatt(this, false, gattCallback));
         }
 
         showConnectingDialog();
@@ -201,7 +201,9 @@ public class ConnectedMainActivity extends MainBaseActivity {
         public void onConnectionStateChange(final BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
 
-            if (newState == BluetoothGatt.STATE_CONNECTED) {
+            Log.d("IRIS", "on connection state changed: status = " + status + " newState = " + newState);
+
+            if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED) {
                 connectedDevices++;
                 //start scan if all devices connected successfully
                 if (connectedDevices == devices.size()) {

@@ -41,7 +41,7 @@ public class SelectDeviceDialog extends DialogFragment {
         SelectDeviceDialog instance = new SelectDeviceDialog();
 
         //pass arguments
-        //This is necessary because Fragments only support a default constructur without arguments.
+        //This is necessary because Fragments only support a default constructor without arguments.
         Bundle args = new Bundle();
         args.putSerializable(DIALOG_EXTRA_LISTENER, listener);
         args.putSerializable(DIALOG_EXTRA_DEVICES, devices);
@@ -96,6 +96,10 @@ public class SelectDeviceDialog extends DialogFragment {
         //this keeps the dialog open on list item click, else it would dismiss instantly
         dialog.getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
+        //view when dialog is empty/no devices found
+        //TODO this doesnt work
+        dialog.getListView().setEmptyView(View.inflate(getActivity(), R.layout.empty_list, null));
+
         return dialog;
     }
 
@@ -119,7 +123,7 @@ public class SelectDeviceDialog extends DialogFragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            View view = getActivity().getLayoutInflater().inflate(R.layout
+            View view = View.inflate(getActivity(), R.layout
                     .checklist_item_two_lines, null);
             BluetoothDevice device = allDevices.get(position);
 
@@ -129,17 +133,18 @@ public class SelectDeviceDialog extends DialogFragment {
             name.setText(device.getName());
             mac.setText(device.getAddress());
 
-            //On item click the following happens: checkbox gets checked (manually, because else
-            // it messes up everything, not forwarding the cklick and stuff) if the ceckbox is
+            //On item click the following happens: checkbox is toggled (manually, because else
+            // it messes up everything, not forwarding the click and stuff) if the checkbox is
             // checked afterwards, the corresponding device is added to the list of selected
             // devices, else it is removed from the list
+            // Please notice: Checkbox is disabled via layout definition
             final CheckBox checkbox = (CheckBox) view.findViewById(R.id.checkbox);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     BluetoothDevice clickedDevice = allDevices.get(position);
                     checkbox.toggle();
-                    Log.d("", "clicked: " + clickedDevice.getAddress());
+
                     if (checkbox.isChecked()) {
                         selectedDevices.add(clickedDevice);
                     } else {
@@ -152,7 +157,7 @@ public class SelectDeviceDialog extends DialogFragment {
         }
     }
 
-    public interface OnConfirmSelectionListener extends Serializable {
+    interface OnConfirmSelectionListener extends Serializable {
         /**
          * Is called when the user presses the positive button of the dialog.
          *

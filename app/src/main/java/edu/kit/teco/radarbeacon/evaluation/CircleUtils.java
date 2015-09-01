@@ -1,5 +1,7 @@
 package edu.kit.teco.radarbeacon.evaluation;
 
+import java.util.List;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;
@@ -59,5 +61,10 @@ public class CircleUtils {
 
         //this works, I promise
         return (int) (floor(angle / sectionSize) + floor(segmentCount / 2));
+    }
+
+    public static double getCircleMedian(List<Double> angles) {
+        //TODO
+        return 0;
     }
 }

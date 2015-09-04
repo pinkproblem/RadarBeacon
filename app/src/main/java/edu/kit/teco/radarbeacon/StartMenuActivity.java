@@ -18,7 +18,7 @@ import android.widget.Adapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class StartMenuActivity extends AppCompatActivity {
+public class StartMenuActivity extends AppCompatActivity implements SelectDeviceDialog.OnConfirmSelectionListener {
 
     //name of the intent extra of the passed devices
     public static final String EXTRA_DEVICES = "edu.kit.teco.radarbeacon.extra_devices";
@@ -98,20 +98,9 @@ public class StartMenuActivity extends AppCompatActivity {
             showEnableBluetoothRequest();
         }
 
-        final ArrayList<BluetoothDevice> selectedDevices = new ArrayList<>();
-
         //show a new device selection dialog; when it returns save selected devices and pass them
         // to new activity
-        selectDialog = SelectDeviceDialog.getInstance(new SelectDeviceDialog.OnConfirmSelectionListener() {
-            @Override
-            public void onConfirmSelection(ArrayList<BluetoothDevice> selection) {
-                selectedDevices.addAll(selection);
-                Intent intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
-                //add selected devices
-                intent.putExtra(EXTRA_DEVICES, selectedDevices);
-                startActivity(intent);
-            }
-        }, devices);
+        selectDialog = SelectDeviceDialog.getInstance(devices);
 
         selectDialog.show(getFragmentManager(), "selectdevice");
 
@@ -124,6 +113,14 @@ public class StartMenuActivity extends AppCompatActivity {
 
         Intent intent = new Intent(StartMenuActivity.this, UnconnectedMainActivity.class);
         intent.putExtra(EXTRA_DEVICES, devices);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onConfirmSelection(ArrayList<BluetoothDevice> selection) {
+        Intent intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
+        //add selected devices
+        intent.putExtra(EXTRA_DEVICES, selection);
         startActivity(intent);
     }
 

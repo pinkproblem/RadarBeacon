@@ -1,5 +1,6 @@
 package edu.kit.teco.radarbeacon;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -25,7 +26,6 @@ import java.util.Set;
 
 public class SelectDeviceDialog extends DialogFragment {
 
-    public static final String DIALOG_EXTRA_LISTENER = "dialog_extra_listener";
     public static final String DIALOG_EXTRA_DEVICES = "dialog_extra_devices";
 
     private OnConfirmSelectionListener confirmListener;
@@ -38,19 +38,16 @@ public class SelectDeviceDialog extends DialogFragment {
     /**
      * Returns a new instance of the dialog.
      *
-     * @param listener the listener that is called if the user presses the positive button. The
-     *                 listener is passed a list of all selected devices.
      * @param devices  a list of all devices that should be selectable in the dialog
      * @return the new instance
      */
-    public static SelectDeviceDialog getInstance(OnConfirmSelectionListener listener,
+    public static SelectDeviceDialog getInstance(
                                                  ArrayList<BluetoothDevice> devices) {
         SelectDeviceDialog instance = new SelectDeviceDialog();
 
         //pass arguments
         //This is necessary because Fragments only support a default constructor without arguments.
         Bundle args = new Bundle();
-        args.putSerializable(DIALOG_EXTRA_LISTENER, listener);
         args.putSerializable(DIALOG_EXTRA_DEVICES, devices);
 
         instance.setArguments(args);
@@ -64,7 +61,6 @@ public class SelectDeviceDialog extends DialogFragment {
         //unpack arguments
         //This is necessary because Fragments only support a default constructur without arguments.
         Bundle args = getArguments();
-        confirmListener = (OnConfirmSelectionListener) args.get(DIALOG_EXTRA_LISTENER);
         allDevices = (ArrayList<BluetoothDevice>) args.get(DIALOG_EXTRA_DEVICES);
 
         selectedDevices = new ArrayList<>();
@@ -73,6 +69,18 @@ public class SelectDeviceDialog extends DialogFragment {
     public void update(ArrayList<BluetoothDevice> newDevices) {
 //        allDevices=newDevices;
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            confirmListener = (OnConfirmSelectionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement ConfirmSelectionListener");
+        }
     }
 
     @Override
@@ -170,7 +178,7 @@ public class SelectDeviceDialog extends DialogFragment {
         }
     }
 
-    interface OnConfirmSelectionListener extends Serializable {
+    interface OnConfirmSelectionListener {
         /**
          * Is called when the user presses the positive button of the dialog.
          *

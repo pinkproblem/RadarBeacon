@@ -9,6 +9,7 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
@@ -19,7 +20,8 @@ import edu.kit.teco.radarbeacon.compass.RotationChangeListener;
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
 import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
 
-public class MainBaseActivity extends AppCompatActivity implements RotationChangeListener, MeasureFragment.OnMeasureCompleteListener {
+public abstract class MainBaseActivity extends AppCompatActivity implements RotationChangeListener,
+        MeasureFragment.OnMeasureCompleteListener, ResultFragment.ResultCallbackListener {
 
     private CompassManager compassManager;
     private float azimuth;
@@ -30,6 +32,11 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
 
     protected ArrayList<BluetoothDevice> devices;
     protected HashMap<BluetoothDevice, EvaluationStrategy> evaluation;
+
+
+    protected abstract void startMeasurement();
+
+    protected abstract void stopMeasurement();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +134,9 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
             }
         });
 
+        //stop scanning
+        stopMeasurement();
+
         //push results to fragment
         HashMap<BluetoothDevice, Float> results = new HashMap<>();
         for (BluetoothDevice device : evaluation.keySet()) {
@@ -138,5 +148,19 @@ public class MainBaseActivity extends AppCompatActivity implements RotationChang
             }
         }
         resultFragment.updateResults(results);
+    }
+
+    public void restartMeasure(View view) {
+        measureFragment = MeasureFragment.getInstance(devices.size());
+        //activate the measure fragment
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        currentFragment = measureFragment;
+        fragmentTransaction.replace(R.id.main_container, currentFragment);
+        fragmentTransaction.commit();
+        //as long as the app is measuring, the screen should not turn off
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        startMeasurement();
     }
 }

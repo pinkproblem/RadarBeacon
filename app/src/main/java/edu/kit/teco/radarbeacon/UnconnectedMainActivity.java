@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,14 +46,24 @@ public class UnconnectedMainActivity extends MainBaseActivity {
     protected void onStart() {
         super.onStart();
 
-        //start le scan
-        scanHandler.post(scanRunnable);
+        startMeasurement();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
+        stopMeasurement();
+    }
+
+    @Override
+    protected void startMeasurement() {
+        //start le scan
+        scanHandler.post(scanRunnable);
+    }
+
+    @Override
+    protected void stopMeasurement() {
         bluetoothAdapter.stopLeScan(leScanCallback);
         scanHandler.removeCallbacksAndMessages(null);
     }

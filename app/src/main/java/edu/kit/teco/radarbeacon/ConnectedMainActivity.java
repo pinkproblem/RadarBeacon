@@ -79,8 +79,7 @@ public class ConnectedMainActivity extends MainBaseActivity {
     protected void onStop() {
         super.onStop();
 
-        //remove all runnables, so it doesnt restart scanning or stuff
-        readRssiHandler.removeCallbacksAndMessages(null);
+        stopMeasurement();
 
         //close all connections
         for (BluetoothGatt gatt : gatts) {
@@ -89,7 +88,8 @@ public class ConnectedMainActivity extends MainBaseActivity {
         gatts.clear();
     }
 
-    private void startScan() {
+    @Override
+    protected void startMeasurement() {
 
         gatts.get(0).readRemoteRssi();
         //skip after a certain delay time if there was no result, and scan the next device
@@ -97,15 +97,10 @@ public class ConnectedMainActivity extends MainBaseActivity {
         readRssiHandler.postDelayed(skipRunnable, INTERRUPT_DELAY);
     }
 
-    private void stopScan() {
-        readRssiHandler.removeCallbacksAndMessages(null);
-    }
-
     @Override
-    public void onMeasureComplete() {
-        stopScan();
-
-        super.onMeasureComplete();
+    protected void stopMeasurement() {
+        //remove all runnables, so it doesnt restart scanning or stuff
+        readRssiHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -191,7 +186,7 @@ public class ConnectedMainActivity extends MainBaseActivity {
                             hideConnectionDialog();
                         }
                     });
-                    startScan();
+                    startMeasurement();
                 }
             } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 connectedDevices--;

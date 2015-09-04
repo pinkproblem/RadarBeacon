@@ -2,7 +2,6 @@ package edu.kit.teco.radarbeacon;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,12 +16,9 @@ public class ResultFragment extends Fragment {
 
     private HashMap<BluetoothDevice, Float> results;
 
-    private OnFragmentInteractionListener mListener;
+    private ResultCallbackListener callbackListener;
 
     LinearLayout container;
-
-    public ResultFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,19 +39,23 @@ public class ResultFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        try {
+            callbackListener = (ResultCallbackListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement ResultCallbackListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        callbackListener = null;
     }
+
+//    public void restartMeasure(View view) {
+//        callbackListener.restartMeasureRequest();
+//    }
 
     public void updateResults(HashMap<BluetoothDevice, Float> newResult) {
         results = newResult;
@@ -77,8 +77,11 @@ public class ResultFragment extends Fragment {
         }
     }
 
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction();
+    public interface ResultCallbackListener {
+        /**
+         * Is called if the user requested (clicked the button) to restart the measurement process.
+         */
+//        public void restartMeasureRequest();
     }
 
 }

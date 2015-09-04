@@ -7,13 +7,16 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class StartMenuActivity extends AppCompatActivity {
 
@@ -24,11 +27,16 @@ public class StartMenuActivity extends AppCompatActivity {
     private static final int SCAN_PERIOD = 3000;
     //duration of the pause between scans in ms
     private static final int SCAN_PAUSE = 5000;
+    //time until a device is deleted if no new advertisement
+    private static final int DEVICE_TIMEOUT = 16000;
 
     private BluetoothAdapter btAdapter;
     private Handler scanHandler;
-    //all found devices
+    //all found devices and the time of the newest advertisement
     private ArrayList<BluetoothDevice> devices;
+    private HashMap<BluetoothDevice, Long> deviceTimeStamp;
+
+    private SelectDeviceDialog selectDialog;
 
 
     @Override
@@ -38,6 +46,7 @@ public class StartMenuActivity extends AppCompatActivity {
 
         scanHandler = new Handler();
         devices = new ArrayList<>();
+        deviceTimeStamp = new HashMap<>();
 
         final BluetoothManager btManager = (BluetoothManager) getSystemService(Context
                 .BLUETOOTH_SERVICE);
@@ -49,6 +58,7 @@ public class StartMenuActivity extends AppCompatActivity {
         super.onStart();
 
         scanHandler.post(startScanRunnable);
+        scanHandler.post(clearRunnable);
     }
 
     @Override
@@ -92,7 +102,7 @@ public class StartMenuActivity extends AppCompatActivity {
 
         //show a new device selection dialog; when it returns save selected devices and pass them
         // to new activity
-        SelectDeviceDialog dialog = SelectDeviceDialog.getInstance(new SelectDeviceDialog.OnConfirmSelectionListener() {
+        selectDialog = SelectDeviceDialog.getInstance(new SelectDeviceDialog.OnConfirmSelectionListener() {
             @Override
             public void onConfirmSelection(ArrayList<BluetoothDevice> selection) {
                 selectedDevices.addAll(selection);
@@ -103,7 +113,7 @@ public class StartMenuActivity extends AppCompatActivity {
             }
         }, devices);
 
-        dialog.show(getFragmentManager(), "selectdevice");
+        selectDialog.show(getFragmentManager(), "selectdevice");
 
     }
 
@@ -123,12 +133,27 @@ public class StartMenuActivity extends AppCompatActivity {
         startActivityForResult(enableBtIntent, 0);
     }
 
+    private void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+        if (!devices.contains(device)) {
+            devices.add(device);
+            if (selectDialog != null) {
+                selectDialog.update(devices);
+            }
+        }
+        deviceTimeStamp.put(device, SystemClock.uptimeMillis());
+    }
+
     BluetoothAdapter.LeScanCallback scanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
-        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            if (!devices.contains(device)) {
-                devices.add(device);
-            }
+        public void onLeScan(final BluetoothDevice device, final int rssi, final byte[]
+                scanRecord) {
+            //simply run all from main thread, because else android has weird problems
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    StartMenuActivity.this.onLeScan(device, rssi, scanRecord);
+                }
+            });
         }
     };
 
@@ -149,6 +174,23 @@ public class StartMenuActivity extends AppCompatActivity {
                 btAdapter.stopLeScan(scanCallback);
             }
             scanHandler.postDelayed(startScanRunnable, SCAN_PAUSE);
+        }
+    };
+
+    //runnable that periodically deletes devices which have not send an advertising for a long time
+    Runnable clearRunnable = new Runnable() {
+        @Override
+        public void run() {
+            for (BluetoothDevice device : deviceTimeStamp.keySet()) {
+                if (SystemClock.uptimeMillis() - deviceTimeStamp.get(device) > DEVICE_TIMEOUT) {
+                    devices.remove(device);
+                    deviceTimeStamp.remove(device);
+                }
+            }
+            if (selectDialog != null) {
+                selectDialog.update(devices);
+            }
+            scanHandler.postDelayed(clearRunnable, DEVICE_TIMEOUT);
         }
     };
 }

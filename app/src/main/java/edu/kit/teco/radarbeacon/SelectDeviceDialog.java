@@ -9,13 +9,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class SelectDeviceDialog extends DialogFragment {
@@ -27,6 +32,8 @@ public class SelectDeviceDialog extends DialogFragment {
     private ArrayList<BluetoothDevice> allDevices;
 
     private ArrayList<BluetoothDevice> selectedDevices;
+
+    private BaseAdapter adapter;
 
     /**
      * Returns a new instance of the dialog.
@@ -63,14 +70,20 @@ public class SelectDeviceDialog extends DialogFragment {
         selectedDevices = new ArrayList<>();
     }
 
+    public void update(ArrayList<BluetoothDevice> newDevices) {
+//        allDevices=newDevices;
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        adapter = new CustomAdapter();
         // Set the dialog title
         //TODO select at least one
         builder.setTitle(R.string.dialog_title_select_devices)
                 // set the adapter that defines how the list is shown and sets the content
-                .setAdapter(new CustomAdapter(), new DialogInterface.OnClickListener() {
+                .setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //nothing here, because the checkbox prevents this method from being

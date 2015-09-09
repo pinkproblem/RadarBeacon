@@ -160,6 +160,9 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
             if (btAdapter != null && btAdapter.isEnabled()) {
                 btAdapter.startLeScan(scanCallback);
             }
+            if (selectDialog != null) {
+                selectDialog.setLoadingIcon(true);
+            }
             scanHandler.postDelayed(stopScanRunnable, SCAN_PERIOD);
         }
     };
@@ -169,6 +172,9 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         public void run() {
             if (btAdapter != null) {
                 btAdapter.stopLeScan(scanCallback);
+            }
+            if (selectDialog != null) {
+                selectDialog.setLoadingIcon(false);
             }
             scanHandler.postDelayed(startScanRunnable, SCAN_PAUSE);
         }

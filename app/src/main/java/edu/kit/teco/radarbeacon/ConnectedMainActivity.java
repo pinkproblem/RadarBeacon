@@ -8,21 +8,16 @@ import android.bluetooth.BluetoothGattCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
-import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
 import edu.kit.teco.radarbeacon.evaluation.MovingAverageEvaluation;
 
 public class ConnectedMainActivity extends MainBaseActivity {
@@ -140,7 +135,7 @@ public class ConnectedMainActivity extends MainBaseActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
 
-        builder.setView(inflater.inflate(R.layout.connect_dialog, null));
+        builder.setView(inflater.inflate(R.layout.dialog_connect, null));
         connectingDialog = builder.create();
         connectingDialog.setCanceledOnTouchOutside(false);
         // handle back button

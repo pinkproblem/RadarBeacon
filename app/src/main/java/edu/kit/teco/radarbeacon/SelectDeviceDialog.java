@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -15,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -32,17 +34,18 @@ public class SelectDeviceDialog extends DialogFragment {
     private ArrayList<BluetoothDevice> allDevices;
 
     private ArrayList<BluetoothDevice> selectedDevices;
-
     private BaseAdapter adapter;
+
+    private ProgressBar loadingIcon;
 
     /**
      * Returns a new instance of the dialog.
      *
-     * @param devices  a list of all devices that should be selectable in the dialog
+     * @param devices a list of all devices that should be selectable in the dialog
      * @return the new instance
      */
     public static SelectDeviceDialog getInstance(
-                                                 ArrayList<BluetoothDevice> devices) {
+            ArrayList<BluetoothDevice> devices) {
         SelectDeviceDialog instance = new SelectDeviceDialog();
 
         //pass arguments
@@ -71,6 +74,14 @@ public class SelectDeviceDialog extends DialogFragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void setLoadingIcon(boolean show) {
+        if (show) {
+            loadingIcon.setVisibility(View.VISIBLE);
+        } else {
+            loadingIcon.setVisibility(View.INVISIBLE);
+        }
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -86,19 +97,21 @@ public class SelectDeviceDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
         adapter = new CustomAdapter();
-        // Set the dialog title
+
+        //inflate view and retrieve elements
+        View view = inflater.inflate(R.layout.dialog_select_device, null);
+        ListView list = (ListView) view.findViewById(R.id.list_select);
+        TextView emptyView = (TextView) view.findViewById(R.id.empty_view);
+        loadingIcon = (ProgressBar) view.findViewById(R.id.loading_select);
+
+        list.setEmptyView(emptyView);
+        list.setAdapter(adapter);
+
         //TODO select at least one
         builder.setTitle(R.string.dialog_title_select_devices)
-                // set the adapter that defines how the list is shown and sets the content
-                .setAdapter(adapter, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //nothing here, because the checkbox prevents this method from being
-                        // called (because it is focusable or something). The click listener is
-                        // applied directly to the checkbox, see the adapter below.
-                    }
-                })
+                .setView(view)
                 .setPositiveButton(R.string.start_scan, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -112,16 +125,7 @@ public class SelectDeviceDialog extends DialogFragment {
                     }
                 });
 
-        AlertDialog dialog = builder.create();
-
-        //this keeps the dialog open on list item click, else it would dismiss instantly
-        dialog.getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
-        //view when dialog is empty/no devices found
-        //TODO this doesnt work
-        dialog.getListView().setEmptyView(View.inflate(getActivity(), R.layout.empty_list, null));
-
-        return dialog;
+        return builder.create();
     }
 
     //adapter for the list inside the dialog

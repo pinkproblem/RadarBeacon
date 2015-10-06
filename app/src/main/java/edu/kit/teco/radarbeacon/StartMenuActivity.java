@@ -3,17 +3,16 @@ package edu.kit.teco.radarbeacon;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
+import android.widget.CheckBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +36,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
     private HashMap<BluetoothDevice, Long> deviceTimeStamp;
 
     private SelectDeviceDialog selectDialog;
+    private CheckBox energyCheckbox;
 
 
     @Override
@@ -51,6 +51,9 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         final BluetoothManager btManager = (BluetoothManager) getSystemService(Context
                 .BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
+
+        //ui stuff
+        energyCheckbox = (CheckBox) findViewById(R.id.checkbox_save_energy);
     }
 
     @Override
@@ -93,32 +96,27 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         return super.onOptionsItemSelected(item);
     }
 
-    public void startConnected(View view) {
+    public void startScan(View view) {
         if (!btAdapter.isEnabled()) {
             showEnableBluetoothRequest();
+            return;
         }
 
         //show a new device selection dialog; when it returns save selected devices and pass them
         // to new activity
         selectDialog = SelectDeviceDialog.getInstance(devices);
-
         selectDialog.show(getFragmentManager(), "selectdevice");
 
     }
 
-    public void startUnconnected(View view) {
-        if (!btAdapter.isEnabled()) {
-            showEnableBluetoothRequest();
-        }
-
-        Intent intent = new Intent(StartMenuActivity.this, UnconnectedMainActivity.class);
-        intent.putExtra(EXTRA_DEVICES, devices);
-        startActivity(intent);
-    }
-
     @Override
     public void onConfirmSelection(ArrayList<BluetoothDevice> selection) {
-        Intent intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
+        Intent intent;
+        if (!energyCheckbox.isChecked()) {
+            intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
+        } else {
+            intent = new Intent(StartMenuActivity.this, UnconnectedMainActivity.class);
+        }
         //add selected devices
         intent.putExtra(EXTRA_DEVICES, selection);
         startActivity(intent);
@@ -180,7 +178,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         }
     };
 
-    //runnable that periodically deletes devices which have not send an advertising for a long time
+    //runnable that periodically deletes devices which have not sent an advertising for a long time
     Runnable clearRunnable = new Runnable() {
         @Override
         public void run() {

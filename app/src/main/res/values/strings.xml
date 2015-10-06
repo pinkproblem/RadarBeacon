@@ -3,9 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_start_menu">StartMenuActivity</string>
-    <string name="button_start_connected">New Button</string>
-    <string name="button_start_unconnected">New Button</string>
+    <string name="title_activity_start_menu">RadarBeacon</string>
+    <string name="button_start_connected">Start Scan</string>
     <string name="dialog_title_select_devices">Select devices</string>
     <string name="title_activity_connected_main">ConnectedMainActivity</string>
 
@@ -15,5 +14,6 @@
     <string name="start_scan">Start</string>
     <string name="cancel">Cancel</string>
     <string name="device_dialog_empty">No devices found</string>
-    <string name="title_activity_unconnected_main">UnconnectedMainActivity</string>
+    <string name="title_activity_unconnected_main">RadarBeacon</string>
+    <string name="checkbox_save_energy">Low Energy Scan</string>
 </resources>

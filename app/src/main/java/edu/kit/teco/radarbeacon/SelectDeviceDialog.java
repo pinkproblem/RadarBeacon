@@ -7,23 +7,19 @@ import android.app.DialogFragment;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 
 public class SelectDeviceDialog extends DialogFragment {
@@ -112,12 +108,8 @@ public class SelectDeviceDialog extends DialogFragment {
         //TODO select at least one
         builder.setTitle(R.string.dialog_title_select_devices)
                 .setView(view)
-                .setPositiveButton(R.string.start_scan, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        confirmListener.onConfirmSelection(selectedDevices);
-                    }
-                })
+                .setPositiveButton(R.string.start_scan, null)//OnClickListener is defined in
+                        // onStart(), else the dialog dismisses always
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -126,6 +118,29 @@ public class SelectDeviceDialog extends DialogFragment {
                 });
 
         return builder.create();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();    //super.onStart() is where dialog.show() is actually called on the underlying dialog, so we have to do it after this point
+        final AlertDialog dialog = (AlertDialog) getDialog();
+        if (dialog != null) {
+            Button positiveButton = (Button) dialog.getButton(Dialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (selectedDevices.size() < 1) {
+                        Toast toast = Toast.makeText(getActivity(), R.string.toast_select_one,
+                                Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    } else {
+                        dialog.dismiss();
+                        confirmListener.onConfirmSelection(selectedDevices);
+                    }
+                }
+            });
+        }
     }
 
     //adapter for the list inside the dialog
@@ -177,6 +192,12 @@ public class SelectDeviceDialog extends DialogFragment {
                     }
                 }
             });
+
+            //set the checkbox as checked if the device is in the selection list. This is
+            // necessary because else the checked-state might get lost on view refresh.
+            if (selectedDevices.contains(device)) {
+                checkbox.setChecked(true);
+            }
 
             return view;
         }

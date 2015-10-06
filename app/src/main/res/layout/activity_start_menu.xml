@@ -9,19 +9,20 @@
                 tools:context="edu.kit.teco.radarbeacon.StartMenuActivity">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/BlackButton"
         android:text="@string/button_start_connected"
+        android:textSize="30dp"
         android:id="@+id/button"
         android:onClick="startScan"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="181dp"/>
+        android:width="300dp"/>
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/checkbox_save_energy"
+        android:textAppearance="@android:style/TextAppearance.Large"
         android:id="@+id/checkbox_save_energy"
         android:layout_below="@+id/button"
         android:layout_centerHorizontal="true"

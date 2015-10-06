@@ -7,8 +7,8 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -185,6 +185,15 @@ public class ConnectedMainActivity extends MainBaseActivity {
                 }
             } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
                 connectedDevices--;
+                if (connectedDevices == 0 && currentFragment == measureFragment) {
+                    stopMeasurement();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showConnectingDialog();
+                        }
+                    });
+                }
             }
 
         }

@@ -64,17 +64,15 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        compassManager.onStart();
+    protected void onResume() {
+        super.onResume();
+        compassManager.start();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-
-        compassManager.onStop();
+    protected void onPause() {
+        super.onPause();
+        compassManager.stop();
     }
 
     @Override

@@ -38,12 +38,12 @@ public class CompassManager implements SensorEventListener {
         listeners = new ArrayList<>();
     }
 
-    public void onStart() {
+    public void start() {
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    public void onStop() {
+    public void stop() {
         sensorManager.unregisterListener(this);
     }
 

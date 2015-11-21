@@ -98,6 +98,24 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
     }
 
     @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment == resultFragment) {
+            //push results to fragment
+            HashMap<BluetoothDevice, Float> results = new HashMap<>();
+            for (BluetoothDevice device : evaluation.keySet()) {
+                try {
+                    float azimuthRes = evaluation.get(device).calculate();
+                    results.put(device, azimuthRes);
+                } catch (InsufficientInputException e) {
+                    e.printStackTrace();
+                }
+            }
+            resultFragment.updateResults(results);
+        }
+    }
+
+    @Override
     public void onAzimuthChange(float newAzimuth) {
         azimuth = newAzimuth;
     }
@@ -136,16 +154,16 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
         stopMeasurement();
 
         //push results to fragment
-        HashMap<BluetoothDevice, Float> results = new HashMap<>();
-        for (BluetoothDevice device : evaluation.keySet()) {
-            try {
-                float azimuthRes = evaluation.get(device).calculate();
-                results.put(device, azimuthRes);
-            } catch (InsufficientInputException e) {
-                e.printStackTrace();
-            }
-        }
-        resultFragment.updateResults(results);
+//        HashMap<BluetoothDevice, Float> results = new HashMap<>();
+//        for (BluetoothDevice device : evaluation.keySet()) {
+//            try {
+//                float azimuthRes = evaluation.get(device).calculate();
+//                results.put(device, azimuthRes);
+//            } catch (InsufficientInputException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        resultFragment.updateResults(results);
     }
 
     public void restartMeasure(View view) {

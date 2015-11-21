@@ -2,9 +2,14 @@ package edu.kit.teco.radarbeacon.evaluation;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static java.lang.Math.*;
-import static edu.kit.teco.radarbeacon.evaluation.CircleUtils.*;
+import java.util.ArrayList;
+
+import static edu.kit.teco.radarbeacon.evaluation.CircleUtils.getCircleDistance;
+import static edu.kit.teco.radarbeacon.evaluation.CircleUtils.getMeanAngle;
+import static edu.kit.teco.radarbeacon.evaluation.CircleUtils.getOpposing;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Iris on 29.08.2015.
@@ -31,7 +36,27 @@ public class CircleUtilsTest {
 
     @Test
     public void testGetMeanAngle() throws Exception {
+        ArrayList<Double> list = new ArrayList<>();
+        list.add(-PI / 4);
+        list.add(PI / 4);
+        assertEquals(0, getMeanAngle(list), delta);
+    }
 
+    @Test
+    public void testGetMeanAngle2() throws Exception {
+        ArrayList<Double> list = new ArrayList<>();
+        list.add(-3 * PI / 4);
+        list.add(3 * PI / 4);
+        assertEquals(PI, abs(getMeanAngle(list)), delta);
+    }
+
+    @Test
+    public void testGetMeanAngle3() throws Exception {
+        ArrayList<Double> list = new ArrayList<>();
+        list.add(-120 * PI / 180);
+        list.add(-170 * PI / 180);
+        list.add(90 * PI / 180);
+        assertEquals(173.33333333 * PI / 180, getMeanAngle(list), 0.1);
     }
 
     @Test

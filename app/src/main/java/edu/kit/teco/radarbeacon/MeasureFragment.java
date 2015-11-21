@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 
@@ -29,8 +26,6 @@ public class MeasureFragment extends Fragment {
     private int numberOfDevices;
     private int[] inputCount;
     private boolean measureComplete;
-
-    ArrayList<TextView> texts;
 
     public static MeasureFragment getInstance(int numberOfDevices) {
         MeasureFragment instance = new MeasureFragment();
@@ -57,14 +52,6 @@ public class MeasureFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_measure, container, false);
 
-        texts = new ArrayList<>();
-        texts.add((TextView) view.findViewById(R.id.s1));
-        texts.add((TextView) view.findViewById(R.id.s2));
-        texts.add((TextView) view.findViewById(R.id.s3));
-        texts.add((TextView) view.findViewById(R.id.s4));
-        texts.add((TextView) view.findViewById(R.id.s5));
-        texts.add((TextView) view.findViewById(R.id.s6));
-
         return view;
     }
 
@@ -87,13 +74,6 @@ public class MeasureFragment extends Fragment {
 
         //set circle segment as done
         if (inputCount[segment] >= MIN_VALUES_PER_SEGMENT * numberOfDevices) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    texts.get(segment).setText("yes");
-
-                }
-            });
         }
 
         //if all segments are done, call the listener

@@ -71,6 +71,12 @@ public class MeasureDrawable extends View {
         right = centerX + width / 2;
         bottom = centerY + width / 2;
 
+        //set center of rotation for this view; this is important since it is not positioned
+        // perfectly in the center of the screen (because the ui didnt want to work the way i
+        // wanted it to work)
+        setPivotX(centerX);
+        setPivotY(centerY);
+
         tagged = new ArrayList<>(defaultSegmentCount);
         setSegmentCount(defaultSegmentCount);
 

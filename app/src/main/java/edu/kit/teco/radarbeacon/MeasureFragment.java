@@ -27,6 +27,8 @@ public class MeasureFragment extends Fragment {
     private int[] inputCount;
     private boolean measureComplete;
 
+    private View measureDrawable;
+
     public static MeasureFragment getInstance(int numberOfDevices) {
         MeasureFragment instance = new MeasureFragment();
 
@@ -51,6 +53,7 @@ public class MeasureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_measure, container, false);
+        measureDrawable = view.findViewById(R.id.measure_view);
 
         return view;
     }
@@ -61,6 +64,12 @@ public class MeasureFragment extends Fragment {
 
         inputCount = new int[NUMBER_OF_SEGMENTS];
         numberOfDevices = getArguments().getInt(EXTRA_DEVICE_COUNT, 1);
+    }
+
+    public void rotateView(float angle) {
+        if (measureDrawable != null) {
+            measureDrawable.setRotation(angle);
+        }
     }
 
     public void addSample(float azimuth, int rssi) {

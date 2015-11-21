@@ -6,6 +6,7 @@ import java.util.List;
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.acos;
+import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.floor;
 import static java.lang.Math.min;
@@ -65,7 +66,7 @@ public class CircleUtils {
      * for better understanding, values are still in radians).
      * Reference: Jerrold H. Zar: Biostatistical Analysis
      */
-    public static double getMeanAngle(List<Double> angles) {
+    public static double getMeanAngle2(List<Double> angles) {
         double X;
         double Y;
         double r;
@@ -84,7 +85,29 @@ public class CircleUtils {
 
         r = sqrt(X * X + Y * Y);
 
+        //dont forget to shift back
         return acos(X / r);
+    }
+
+    public static double getMeanAngle(List<Double> angles) {
+
+        double X;
+        double Y;
+
+        double cosSum = 0;
+        for (Double a : angles) {
+            cosSum += cos(a);
+        }
+        X = cosSum / angles.size();
+
+        double sinSum = 0;
+        for (Double a : angles) {
+            sinSum += sin(a);
+        }
+        Y = sinSum / angles.size();
+
+        //dont forget to shift back
+        return atan2(Y, X);
     }
 
     /**

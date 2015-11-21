@@ -14,17 +14,23 @@ import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import edu.kit.teco.radarbeacon.compass.CompassManager;
 import edu.kit.teco.radarbeacon.compass.RotationChangeListener;
+import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
 import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
 
 public abstract class MainBaseActivity extends AppCompatActivity implements RotationChangeListener,
         MeasureFragment.OnMeasureCompleteListener, ResultFragment.ResultCallbackListener {
 
+    private static final int azimuthBufferSize = 5;
     private CompassManager compassManager;
+    private List<Double> azimuthBuffer;
+    private int bufferCounter;
     private float azimuth;
+    protected float smoothAzimuth;
 
     protected Fragment currentFragment;
     protected MeasureFragment measureFragment;
@@ -47,6 +53,7 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
         compassManager = new CompassManager(this);
         //register for rotation updates
         compassManager.registerRotationListener(this);
+        azimuthBuffer = new ArrayList<>();
 
         devices = (ArrayList<BluetoothDevice>) getIntent().getSerializableExtra(StartMenuActivity.EXTRA_DEVICES);
 
@@ -118,6 +125,24 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
     @Override
     public void onAzimuthChange(float newAzimuth) {
         azimuth = newAzimuth;
+
+        smoothAzimuth = calculateSmoothAzimuth(newAzimuth);
+
+        if (measureFragment != null) {
+            measureFragment.rotateView(360 - (float) CircleUtils.radiansToDegree(smoothAzimuth));
+        }
+    }
+
+    private float calculateSmoothAzimuth(float newAzimuth) {
+        //hacky version of a ringbuffer
+        if (azimuthBuffer.size() <= bufferCounter) {
+            azimuthBuffer.add((double) newAzimuth);
+        } else {
+            azimuthBuffer.set(bufferCounter, (double) newAzimuth);
+        }
+        bufferCounter = (bufferCounter + 1) % azimuthBufferSize;
+
+        return (float) CircleUtils.getMeanAngle(azimuthBuffer);
     }
 
     protected float getAzimuth() {

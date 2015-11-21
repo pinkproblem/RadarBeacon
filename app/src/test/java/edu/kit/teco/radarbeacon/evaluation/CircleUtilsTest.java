@@ -56,7 +56,24 @@ public class CircleUtilsTest {
         list.add(-120 * PI / 180);
         list.add(-170 * PI / 180);
         list.add(90 * PI / 180);
-        assertEquals(173.33333333 * PI / 180, getMeanAngle(list), 0.1);
+        assertEquals(173.33333333 * PI / 180, abs(getMeanAngle(list)), 0.1);
+    }
+
+    @Test
+    public void testGetMeanAnglePositive() throws Exception {
+        ArrayList<Double> list = new ArrayList<>();
+        list.add(PI * 1 / 4);
+        list.add(PI * 3 / 4);
+        assertEquals(PI / 2, getMeanAngle(list), 0.1);
+    }
+
+    //tests for correct handling in negative area
+    @Test
+    public void testGetMeanAngleNegative() throws Exception {
+        ArrayList<Double> list = new ArrayList<>();
+        list.add(-PI * 1 / 4);
+        list.add(-PI * 3 / 4);
+        assertEquals(-PI / 2, getMeanAngle(list), 0.1);
     }
 
     @Test

@@ -16,7 +16,7 @@ public class MeasureFragment extends Fragment {
 
     private static final String EXTRA_DEVICE_COUNT = "fragment_extra_device_count";
 
-    private static final int NUMBER_OF_SEGMENTS = 6;
+    private static final int NUMBER_OF_SEGMENTS = 8;
     //TODO testing value
     private static final int MIN_VALUES_PER_SEGMENT = 1;//and per device!
 
@@ -54,6 +54,7 @@ public class MeasureFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_measure, container, false);
         measureDrawable = (MeasureDrawable) view.findViewById(R.id.measure_view);
+        measureDrawable.setSegmentCount(NUMBER_OF_SEGMENTS);
 
         return view;
     }
@@ -72,9 +73,14 @@ public class MeasureFragment extends Fragment {
         }
     }
 
-    public void onAzimuthChange(float newAzimuth) {
-        measureDrawable.tag(newAzimuth);
-    }
+//    public void onAzimuthChange(float newAzimuth) {
+//        int index = CircleUtils.getCircleSegment(newAzimuth, NUMBER_OF_SEGMENTS);
+//        inputCount[index]++;
+//
+//        if (inputCount[index] >= MIN_VALUES_PER_SEGMENT * numberOfDevices) {
+//            measureDrawable.tag(newAzimuth);
+//        }
+//    }
 
     public void addSample(float azimuth, int rssi) {
 
@@ -87,6 +93,7 @@ public class MeasureFragment extends Fragment {
 
         //set circle segment as done
         if (inputCount[segment] >= MIN_VALUES_PER_SEGMENT * numberOfDevices) {
+            measureDrawable.tag(azimuth);
         }
 
         //if all segments are done, call the listener

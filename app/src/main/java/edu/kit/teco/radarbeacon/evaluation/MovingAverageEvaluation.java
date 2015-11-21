@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import static java.lang.Math.*;
+import static java.lang.Math.PI;
 
 /**
  * Evaluation strategy that uses the moving average method to smooth the discrete set of samples.
@@ -142,6 +142,30 @@ public class MovingAverageEvaluation implements EvaluationStrategy {
         }
 
         return median;
+    }
+
+    @Override
+    public double getDistance() {
+        //simple solution: since false high rssi values are unlikely, and the calculation is more
+        // exact with higher rssi values, we just take the maximum rssi and transform it to the
+        // distance
+        int maxRssi = Integer.MIN_VALUE;
+        for (Sample s : samples) {
+            int rssi = s.getRssi();
+            if (rssi > maxRssi) {
+                maxRssi = rssi;
+            }
+        }
+
+        return rssiToDistance(maxRssi);
+    }
+
+    //aus dem praktikum
+    private static final double A = -66.72D; // in dbm
+    private static final double K = Math.pow(10D, A / 20D); // in mW
+
+    private static double rssiToDistance(int rssi) {
+        return (K / Math.pow(10D, rssi / 20D)); // dBm to mW distance is inversely proportional to power
     }
 
     /**

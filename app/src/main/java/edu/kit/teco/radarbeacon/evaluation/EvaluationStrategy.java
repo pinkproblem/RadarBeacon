@@ -30,4 +30,11 @@ public interface EvaluationStrategy {
      *                                    something else went really really wrong
      */
     public float calculate() throws InsufficientInputException;
+
+    /**
+     * Returns an estimated distance to the remote device based on collected sample information.
+     *
+     * @return distance to remote device
+     */
+    public double getDistance();
 }

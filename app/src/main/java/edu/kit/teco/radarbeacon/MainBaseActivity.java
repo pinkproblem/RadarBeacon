@@ -130,7 +130,11 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
 
         if (measureFragment != null) {
             measureFragment.rotateView(360 - (float) CircleUtils.radiansToDegree(smoothAzimuth));
+            if (currentFragment == measureFragment) {
+                measureFragment.onAzimuthChange(newAzimuth);
+            }
         }
+
     }
 
     private float calculateSmoothAzimuth(float newAzimuth) {

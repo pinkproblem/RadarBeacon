@@ -14,6 +14,8 @@ import android.view.WindowManager;
 
 import java.util.ArrayList;
 
+import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
+
 /**
  * Created by Iris on 11.11.2015.
  */
@@ -28,7 +30,7 @@ public class MeasureDrawable extends View {
     private int numberOfSegments;
 
     private ArrayList<ShapeDrawable> segments;
-    private ArrayList<Boolean> tagged;
+    private boolean[] tagged;
     private ShapeDrawable innerCircle;
 
     private int top;
@@ -77,7 +79,7 @@ public class MeasureDrawable extends View {
         setPivotX(centerX);
         setPivotY(centerY);
 
-        tagged = new ArrayList<>(defaultSegmentCount);
+        tagged = new boolean[defaultSegmentCount];
         setSegmentCount(defaultSegmentCount);
 
         innerCircle = new ShapeDrawable(new ArcShape(0, 360));
@@ -113,10 +115,19 @@ public class MeasureDrawable extends View {
             throw new IllegalArgumentException("Index out of bounds");
         }
 
-        if (!tagged.get(index)) {
-            tagged.set(index, true);
+        if (!tagged[index]) {
+            tagged[index] = true;
             segments.get(index).getPaint().setColor(taggedColor);
             invalidate();
         }
+    }
+
+    public void tag(float radians) {
+        if (radians < -Math.PI || radians >= Math.PI) {
+            throw new IllegalArgumentException("Angle out of bounds");
+        }
+
+        int index = CircleUtils.getCircleSegment(radians, numberOfSegments);
+        tag(index);
     }
 }

@@ -11,7 +11,7 @@ import static java.lang.Math.PI;
  * Every original point gets replaced by a smoothed point, whose value is the average of all
  * points within a certain window around the original point. Also, the maximum value is
  * determined by taking the medium of the first x highest values.
- * <p>
+ * <p/>
  * All samples are treated in a circular way, means the first value is the successor of the last
  * one and so on.
  */
@@ -149,8 +149,12 @@ public class MovingAverageEvaluation implements EvaluationStrategy {
         //simple solution: since false high rssi values are unlikely, and the calculation is more
         // exact with higher rssi values, we just take the maximum rssi and transform it to the
         // distance
+
+        //to make it more dynamic, lets say the maximum of the last x values
         int maxRssi = Integer.MIN_VALUE;
-        for (Sample s : samples) {
+        final int lookupWidth = 15;
+        for (int i = samples.size() - lookupWidth; i < samples.size(); i++) {
+            Sample s = samples.get(i);
             int rssi = s.getRssi();
             if (rssi > maxRssi) {
                 maxRssi = rssi;

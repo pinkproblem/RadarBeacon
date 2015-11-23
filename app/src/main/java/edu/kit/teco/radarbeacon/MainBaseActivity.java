@@ -24,7 +24,7 @@ import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
 public abstract class MainBaseActivity extends AppCompatActivity implements RotationChangeListener,
         MeasureFragment.OnMeasureCompleteListener, ResultFragment.ResultCallbackListener {
 
-    private static final int azimuthBufferSize = 5;
+    private static final int azimuthBufferSize = 10;
     private CompassManager compassManager;
     private List<Double> azimuthBuffer;
     private int bufferCounter;
@@ -62,9 +62,9 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
         //activate the measure fragment
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        currentFragment = measureFragment;
-        fragmentTransaction.add(R.id.main_container, currentFragment);
+        fragmentTransaction.add(R.id.main_container, measureFragment);
         fragmentTransaction.commit();
+        currentFragment = measureFragment;
         //as long as the app is measuring, the screen should not turn off
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -107,12 +107,16 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
         if (fragment == resultFragment) {
+            currentFragment = resultFragment;
+
             //push results to fragment
             HashMap<BluetoothDevice, EvaluationStrategy> results = new HashMap<>();
             for (BluetoothDevice device : evaluation.keySet()) {
                 results.put(device, evaluation.get(device));
             }
             resultFragment.updateResults(results);
+        } else if (fragment == measureFragment) {
+            currentFragment = measureFragment;
         }
     }
 
@@ -124,6 +128,9 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
 
         if (measureFragment != null) {
             measureFragment.rotateView(360 - (float) CircleUtils.radiansToDegree(smoothAzimuth));
+        }
+        if (currentFragment == resultFragment) {
+            resultFragment.onSmoothAzimuthChange(smoothAzimuth);
         }
 
     }
@@ -158,8 +165,8 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
         //there are enough values for an evaluation, so change to result fragment
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        currentFragment = resultFragment;
-        fragmentTransaction.replace(R.id.main_container, currentFragment);
+        //currentFragment = resultFragment;
+        fragmentTransaction.replace(R.id.main_container, resultFragment);
         fragmentTransaction.commit();
 
         //dont forget to release the wakelock
@@ -191,7 +198,7 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
         //activate the measure fragment
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        currentFragment = measureFragment;
+        //currentFragment = measureFragment;
         fragmentTransaction.replace(R.id.main_container, currentFragment);
         fragmentTransaction.commit();
         //as long as the app is measuring, the screen should not turn off

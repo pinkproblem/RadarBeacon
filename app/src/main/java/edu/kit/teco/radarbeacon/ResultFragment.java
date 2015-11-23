@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
@@ -21,14 +22,24 @@ import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
 public class ResultFragment extends Fragment {
 
     private HashMap<BluetoothDevice, EvaluationStrategy> results;
+    private HashMap<BluetoothDevice, Float> resultBuffer;
+    private float smoothAzimuth;
 
     private ResultCallbackListener callbackListener;
 
     private RelativeLayout relativeLayout;
+    private ArrayList<ImageView> arrows;//for cleaning up
+
+    public ResultFragment() {
+        super();
+        resultBuffer = new HashMap<>();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     @Override
@@ -38,6 +49,7 @@ public class ResultFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_result, container, false);
 
         relativeLayout = (RelativeLayout) view.findViewById(R.id.result_relative_layout);
+        arrows = new ArrayList<>();
 
         try {
             updateView();
@@ -67,18 +79,45 @@ public class ResultFragment extends Fragment {
         callbackListener = null;
     }
 
+    public void onSmoothAzimuthChange(float newAzimuth) {
+        smoothAzimuth = newAzimuth;
+        updateView();
+    }
+
 //    public void restartMeasure(View view) {
 //        callbackListener.restartMeasureRequest();
 //    }
 
     public void updateResults(HashMap<BluetoothDevice, EvaluationStrategy> newResult) {
         results = newResult;
+        fillResultBuffer();
+    }
+
+    private void fillResultBuffer() {
+        resultBuffer.clear();
+        for (BluetoothDevice device : results.keySet()) {
+            EvaluationStrategy ev = results.get(device);
+            float res;
+            try {
+                res = ev.calculate();
+            } catch (InsufficientInputException e) {
+                res = 0;
+            }
+            resultBuffer.put(device, res);
+        }
     }
 
     void updateView() {
+        //remove curretn arrows
+        for (ImageView im : arrows) {
+            relativeLayout.removeView(im);
+        }
+
+        //add arrow for every device
         for (final BluetoothDevice device : results.keySet()) {
             final ImageView arrow = new ImageView(getActivity());
             arrow.setImageResource(R.drawable.arrow2);
+            arrows.add(arrow);
 
             arrow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,21 +132,21 @@ public class ResultFragment extends Fragment {
             int radius = screenWidth / 2 - arrowSize / 2;
 
             int centerX = screenWidth / 2;
-            int centerY = screenHeight / 2 - 70;
+            int centerY = screenHeight / 2 - 60;
 
             //calculate direction
-            float direction;
-            try {
-                direction = results.get(device).calculate();
-            } catch (InsufficientInputException e) {
-                direction = 0;
+            Float direction = resultBuffer.get(device);
+            if (direction == null) {
+                fillResultBuffer();
+                direction = resultBuffer.get(device);
             }
-            //direction = (float) (0);
-            double dirDegree = (CircleUtils.radiansToDegree(direction) + 180) % 360;
+            direction = (float) (Math.PI / 4);
+            float relativeDirection = direction - smoothAzimuth;
+            double dirDegree = (CircleUtils.radiansToDegree(relativeDirection) + 180) % 360;
 
             //calculate position
-            float x = (float) (radius * Math.sin(direction));
-            float y = (float) (radius * Math.cos(direction));
+            float x = (float) (radius * Math.sin(relativeDirection));
+            float y = (float) (radius * Math.cos(relativeDirection));
 
             //set rotation
             arrow.setRotation((float) dirDegree);

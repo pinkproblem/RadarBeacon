@@ -67,7 +67,9 @@ public class SelectDeviceDialog extends DialogFragment {
 
     public void update(ArrayList<BluetoothDevice> newDevices) {
 //        allDevices=newDevices;
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void setLoadingIcon(boolean show) {

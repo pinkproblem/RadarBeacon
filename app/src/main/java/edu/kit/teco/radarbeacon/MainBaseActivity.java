@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -194,12 +195,12 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
     }
 
     public void restartMeasure(View view) {
+        Log.d("iris", "restart measurement");
         measureFragment = MeasureFragment.getInstance(devices.size());
         //activate the measure fragment
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //currentFragment = measureFragment;
-        fragmentTransaction.replace(R.id.main_container, currentFragment);
+        fragmentTransaction.replace(R.id.main_container, measureFragment);
         fragmentTransaction.commit();
         //as long as the app is measuring, the screen should not turn off
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

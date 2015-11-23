@@ -118,7 +118,7 @@ public class MeasureDrawable extends View {
         if (!tagged[index]) {
             tagged[index] = true;
             segments.get(index).getPaint().setColor(taggedColor);
-            invalidate();
+            postInvalidate();
         }
     }
 

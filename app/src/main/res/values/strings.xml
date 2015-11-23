@@ -17,4 +17,5 @@
     <string name="title_activity_unconnected_main">RadarBeacon</string>
     <string name="checkbox_save_energy">Low Energy Scan</string>
     <string name="toast_select_one">Please select at least one device</string>
+    <string name="mac">MAC</string>
 </resources>

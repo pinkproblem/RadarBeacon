@@ -20,7 +20,6 @@ import edu.kit.teco.radarbeacon.compass.CompassManager;
 import edu.kit.teco.radarbeacon.compass.RotationChangeListener;
 import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
-import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
 
 public abstract class MainBaseActivity extends AppCompatActivity implements RotationChangeListener,
         MeasureFragment.OnMeasureCompleteListener, ResultFragment.ResultCallbackListener {
@@ -109,14 +108,9 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
         super.onAttachFragment(fragment);
         if (fragment == resultFragment) {
             //push results to fragment
-            HashMap<BluetoothDevice, Float> results = new HashMap<>();
+            HashMap<BluetoothDevice, EvaluationStrategy> results = new HashMap<>();
             for (BluetoothDevice device : evaluation.keySet()) {
-                try {
-                    float azimuthRes = evaluation.get(device).calculate();
-                    results.put(device, azimuthRes);
-                } catch (InsufficientInputException e) {
-                    e.printStackTrace();
-                }
+                results.put(device, evaluation.get(device));
             }
             resultFragment.updateResults(results);
         }

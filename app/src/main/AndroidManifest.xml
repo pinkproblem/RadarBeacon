@@ -48,6 +48,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.kit.teco.radarbeacon.StartMenuActivity"/>
         </activity>
+        <activity
+            android:name="edu.kit.teco.radarbeacon.test.FragmentContainer"
+            android:label="@string/title_activity_connected_main"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

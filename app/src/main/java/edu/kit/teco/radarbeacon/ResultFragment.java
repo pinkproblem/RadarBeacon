@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class ResultFragment extends Fragment {
 
     private RelativeLayout relativeLayout;
     private ArrayList<ImageView> arrows;//for cleaning up
+    private ArrayList<TextView> distanceViews;
 
     public ResultFragment() {
         super();
@@ -50,6 +52,7 @@ public class ResultFragment extends Fragment {
 
         relativeLayout = (RelativeLayout) view.findViewById(R.id.result_relative_layout);
         arrows = new ArrayList<>();
+        distanceViews = new ArrayList<>();
 
         try {
             updateView();
@@ -108,12 +111,15 @@ public class ResultFragment extends Fragment {
     }
 
     void updateView() {
-        //remove curretn arrows
+        //remove current arrows and texts
         for (ImageView im : arrows) {
             relativeLayout.removeView(im);
         }
+        for (TextView t : distanceViews) {
+            relativeLayout.removeView(t);
+        }
 
-        //add arrow for every device
+        //add arrow and distance for every device
         for (final BluetoothDevice device : results.keySet()) {
             final ImageView arrow = new ImageView(getActivity());
             arrow.setImageResource(R.drawable.arrow2);
@@ -129,7 +135,7 @@ public class ResultFragment extends Fragment {
             int arrowSize = (int) dpToPx(100);
             int screenWidth = getResources().getDisplayMetrics().widthPixels;
             int screenHeight = getResources().getDisplayMetrics().heightPixels;
-            int radius = screenWidth / 2 - arrowSize / 2;
+            float radius = screenWidth / 2 - arrowSize / 2;
 
             int centerX = screenWidth / 2;
             int centerY = screenHeight / 2 - 60;
@@ -142,14 +148,14 @@ public class ResultFragment extends Fragment {
             }
             direction = (float) (Math.PI / 4);
             float relativeDirection = direction - smoothAzimuth;
-            double dirDegree = (CircleUtils.radiansToDegree(relativeDirection) + 180) % 360;
+            float dirDegree = (float) ((CircleUtils.radiansToDegree(relativeDirection) + 180) % 360);
 
             //calculate position
             float x = (float) (radius * Math.sin(relativeDirection));
             float y = (float) (radius * Math.cos(relativeDirection));
 
             //set rotation
-            arrow.setRotation((float) dirDegree);
+            arrow.setRotation(dirDegree);
 
             //set position
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(arrowSize, arrowSize);
@@ -157,6 +163,29 @@ public class ResultFragment extends Fragment {
             params.topMargin = (int) (centerY - y - arrowSize / 2);
             arrow.setAdjustViewBounds(true);
             relativeLayout.addView(arrow, params);
+
+
+            //distances
+            EvaluationStrategy ev = results.get(device);
+            TextView textView = new TextView(getActivity());
+            distanceViews.add(textView);
+
+            String text = String.format("%.1f", ev.getDistance()) + "m";
+            textView.setText(text);
+            textView.setTextSize(25);
+            textView.setRotation(dirDegree);
+
+            textView.measure(0, 0);
+            float viewWidth = textView.getMeasuredWidth();
+            float viewHeight = textView.getMeasuredHeight();
+
+            radius = screenWidth / 2 - arrowSize / 2 - dpToPx(15);
+            x = (float) (radius * Math.sin(relativeDirection));
+            y = (float) (radius * Math.cos(relativeDirection));
+            params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = (int) (centerX + x - viewWidth / 2);
+            params.topMargin = (int) (centerY - y - viewHeight / 2);
+            relativeLayout.addView(textView, params);
         }
     }
 

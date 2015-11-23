@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
 
 /**
  * Evaluation strategy that uses the moving average method to smooth the discrete set of samples.
@@ -153,7 +155,7 @@ public class MovingAverageEvaluation implements EvaluationStrategy {
         //to make it more dynamic, lets say the maximum of the last x values
         int maxRssi = Integer.MIN_VALUE;
         final int lookupWidth = 15;
-        for (int i = samples.size() - lookupWidth; i < samples.size(); i++) {
+        for (int i = min(samples.size() - lookupWidth, 0); i < samples.size(); i++) {
             Sample s = samples.get(i);
             int rssi = s.getRssi();
             if (rssi > maxRssi) {
@@ -166,10 +168,10 @@ public class MovingAverageEvaluation implements EvaluationStrategy {
 
     //aus dem praktikum
     private static final double A = -66.72D; // in dbm
-    private static final double K = Math.pow(10D, A / 20D); // in mW
+    private static final double K = pow(10D, A / 20D); // in mW
 
     private static double rssiToDistance(int rssi) {
-        return (K / Math.pow(10D, rssi / 20D)); // dBm to mW distance is inversely proportional to power
+        return (K / pow(10D, rssi / 20D)); // dBm to mW distance is inversely proportional to power
     }
 
     /**

@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class StartMenuActivity extends AppCompatActivity implements SelectDeviceDialog.OnConfirmSelectionListener {
 
@@ -182,10 +183,13 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
     Runnable clearRunnable = new Runnable() {
         @Override
         public void run() {
-            for (BluetoothDevice device : deviceTimeStamp.keySet()) {
+            Iterator<BluetoothDevice> iter = deviceTimeStamp.keySet().iterator();
+            BluetoothDevice device;
+            while (iter.hasNext()) {
+                device = iter.next();
                 if (SystemClock.uptimeMillis() - deviceTimeStamp.get(device) > DEVICE_TIMEOUT) {
                     devices.remove(device);
-                    deviceTimeStamp.remove(device);
+                    iter.remove();
                 }
             }
             if (selectDialog != null) {

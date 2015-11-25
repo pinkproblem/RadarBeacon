@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,7 +119,6 @@ public class ResultFragment extends Fragment {
             arrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("iris", "clicked");
                     onDeviceClicked(device, arrow);
                 }
             });
@@ -129,7 +127,7 @@ public class ResultFragment extends Fragment {
             TextView textView = new TextView(getActivity());
             String text = String.format("%.1f", ev.getDistance()) + "m";
             textView.setText(text);
-            textView.setTextSize(25);
+            textView.setTextSize(30);
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -205,13 +203,14 @@ public class ResultFragment extends Fragment {
     }
 
     protected void onDeviceClicked(BluetoothDevice device, ImageView arrow) {
-        Log.d("iris", "clicked");
         textName.setText(device.getName());
         textMac.setText(getActivity().getResources().getString(R.string.mac) + ": " + device
                 .getAddress());
         textStatus.setText("ONLINE");//TODO
 
         infoRelativeLayout.setVisibility(View.VISIBLE);
+
+        arrow.setImageResource(R.drawable.arrow2_dark);
     }
 
     public interface ResultCallbackListener {

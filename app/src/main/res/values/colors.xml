@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="lightgreen" type="color">#ff98f098</item>
+    <item name="blue" type="color">#ff33abff</item>
+    <item name="darkblue" type="color">#ff06528c</item>
+    <item name="darkgrey" type="color">#ff181818</item>
+    <item name="pink" type="color">#ffdd188b</item>
 </resources>

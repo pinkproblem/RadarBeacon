@@ -2,10 +2,37 @@
 
     <!-- Base application theme. -->
     <style name="CustomTheme" parent="Theme.AppCompat.Light">
-        <!-- customize the color palette -->
+        <item name="android:alertDialogTheme">@style/CustomDialogTheme</item>
+        <item name="android:dialogTheme">@style/CustomDialogTheme</item>
+        <item name="android:alertDialogStyle">@style/CustomDialogTheme</item>
+
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/darkblue</item>
         <item name="colorAccent">@color/darkgrey</item>
+    </style>
+
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowTitleStyle">@style/DialogTitleStyle</item>
+
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryDark">@color/darkblue</item>
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <style name="DialogButtonStyle" parent="@android:style/Widget.Holo.Button.Borderless">
+        <item name="android:background">@color/pink</item>
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <style name="DialogTitleStyle" parent="@style/Base.DialogWindowTitle.AppCompat">
+        <item name="android:textAppearance">@style/DialogTextAppearance</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
+
+    <style name="DialogTextAppearance" parent="@android:style/TextAppearance.Holo.DialogWindowTitle">
+        <!--<item name="android:textSize">40sp</item>-->
+        <item name="android:textColor">@color/darkblue</item>
     </style>
 
     <style name="BlackButton" parent="@android:style/Widget.Button">

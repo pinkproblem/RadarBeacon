@@ -1,13 +1,7 @@
 package edu.kit.teco.radarbeacon;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,8 +12,6 @@ import edu.kit.teco.radarbeacon.evaluation.MovingAverageEvaluation;
 public class ConnectedMainActivity extends MainBaseActivity implements ConnectionManager.ConnectionListener {
 
     private ConnectionManager connectionManager;
-
-    private Dialog connectingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +33,11 @@ public class ConnectedMainActivity extends MainBaseActivity implements Connectio
     protected void onStart() {
         super.onStart();
         connectionManager.connect();
-        showConnectingDialog();
+
+        //if all devices are already connecting, start measuring
+        if (connectionManager.getConnectedDevices().size() == devices.size()) {
+            startMeasurement();
+        }
     }
 
     @Override
@@ -83,37 +79,6 @@ public class ConnectedMainActivity extends MainBaseActivity implements Connectio
         return super.onOptionsItemSelected(item);
     }
 
-    private void showConnectingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-
-        builder.setView(inflater.inflate(R.layout.dialog_connect, null));
-        connectingDialog = builder.create();
-        connectingDialog.setCanceledOnTouchOutside(false);
-        // handle back button
-        connectingDialog.setOnKeyListener(new Dialog.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface arg0, int keyCode,
-                                 KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    connectingDialog.dismiss();
-                    Intent intent = new Intent(ConnectedMainActivity.this,
-                            StartMenuActivity.class);
-                    startActivity(intent);
-                }
-                return true;
-            }
-        });
-
-        connectingDialog.show();
-    }
-
-    private void hideConnectionDialog() {
-        if (connectingDialog != null) {
-            connectingDialog.hide();
-        }
-    }
-
     @Override
     public void onRssiResult(final BluetoothDevice device, final int rssi) {
         runOnUiThread(new Runnable() {
@@ -139,12 +104,6 @@ public class ConnectedMainActivity extends MainBaseActivity implements Connectio
 
     @Override
     public void onAllDevicesConnected() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                hideConnectionDialog();
-            }
-        });
         connectionManager.startMeasurement();
     }
 }

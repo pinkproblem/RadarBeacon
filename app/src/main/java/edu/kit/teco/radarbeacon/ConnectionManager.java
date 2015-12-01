@@ -92,6 +92,9 @@ public class ConnectionManager {
     }
 
     public void startMeasurement() {
+        if (!connectionRunning || gatts.size() < 1) {
+            return;
+        }
         if (measurementRunning) {
             return;
         }

@@ -12,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +39,12 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
     private HashMap<BluetoothDevice, Long> deviceTimeStamp;
 
     private SelectDeviceDialog selectDialog;
+    private Button startButton;
+    private Button connectingButton;
     private CheckBox energyCheckbox;
+    private ProgressBar connectionProgress;
+
+    private ConnectionManager connectionManager;
 
 
     @Override
@@ -54,12 +61,23 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         btAdapter = btManager.getAdapter();
 
         //ui stuff
+        startButton = (Button) findViewById(R.id.button);
+        connectingButton = (Button) findViewById(R.id.button_connecting);
         energyCheckbox = (CheckBox) findViewById(R.id.checkbox_save_energy);
+        connectionProgress = (ProgressBar) findViewById(R.id.connection_progress);
+
+        connectingButton.setVisibility(View.INVISIBLE);
+        connectionProgress.setVisibility(View.INVISIBLE);
+
+        connectionManager = ConnectionManager.getInstance(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        connectingButton.setVisibility(View.INVISIBLE);
+        connectionProgress.setVisibility(View.INVISIBLE);
 
         scanHandler.post(startScanRunnable);
         scanHandler.post(clearRunnable);
@@ -111,16 +129,43 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
     }
 
     @Override
-    public void onConfirmSelection(ArrayList<BluetoothDevice> selection) {
-        Intent intent;
+    public void onConfirmSelection(final ArrayList<BluetoothDevice> selection) {
+
         if (!energyCheckbox.isChecked()) {
-            intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
+            connectionManager.setDevices(selection);
+            connectionManager.setConnectionListener(new ConnectionManager.ConnectionListener() {
+                @Override
+                public void onRssiResult(BluetoothDevice device, int rssi) {
+
+                }
+
+                @Override
+                public void onDeviceConnected(BluetoothDevice device) {
+
+                }
+
+                @Override
+                public void onDeviceDisconnected(BluetoothDevice device) {
+
+                }
+
+                @Override
+                public void onAllDevicesConnected() {
+                    Intent intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
+                    //add selected devices
+                    intent.putExtra(EXTRA_DEVICES, selection);
+                    startActivity(intent);
+                }
+            });
+            connectingButton.setVisibility(View.VISIBLE);
+            connectionProgress.setVisibility(View.VISIBLE);
+            connectionManager.connect();
         } else {
-            intent = new Intent(StartMenuActivity.this, UnconnectedMainActivity.class);
+            Intent intent = new Intent(StartMenuActivity.this, UnconnectedMainActivity.class);
+            //add selected devices
+            intent.putExtra(EXTRA_DEVICES, selection);
+            startActivity(intent);
         }
-        //add selected devices
-        intent.putExtra(EXTRA_DEVICES, selection);
-        startActivity(intent);
     }
 
     private void showEnableBluetoothRequest() {

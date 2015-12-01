@@ -18,14 +18,34 @@
         android:layout_centerHorizontal="true"
         android:width="300dp"/>
 
+    <Button
+        style="@style/BlackButton"
+        android:text="@string/connecting"
+        android:textSize="30dp"
+        android:id="@+id/button_connecting"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:width="300dp"/>
+
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/checkbox_save_energy"
         android:textAppearance="@android:style/TextAppearance.Large"
         android:id="@+id/checkbox_save_energy"
+        android:layout_marginTop="14dp"
+        android:layout_below="@+id/connection_progress"
+        android:layout_centerHorizontal="true"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/connection_progress"
         android:layout_below="@+id/button"
+        android:layout_alignLeft="@+id/button"
+        android:layout_alignRight="@+id/button"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"/>
+        android:indeterminate="true"/>
 
 </RelativeLayout>

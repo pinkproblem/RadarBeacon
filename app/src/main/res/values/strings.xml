@@ -18,4 +18,6 @@
     <string name="checkbox_save_energy">Low Energy Scan</string>
     <string name="toast_select_one">Please select at least one device</string>
     <string name="mac">MAC</string>
+    <string name="tutorial_dont_show_again">Don\'t show again</string>
+    <string name="ok">Okay</string>
 </resources>

@@ -26,4 +26,7 @@
     <string name="tutorial_measure_4">\u2022 Spin round slowly until all sections are green</string>
     <string name="go">Go!</string>
     <string name="measurement">Measurement</string>
+    <string name="online">ONLINE</string>
+    <string name="offline">OFFLINE</string>
+    <string name="error">ERROR</string>
 </resources>

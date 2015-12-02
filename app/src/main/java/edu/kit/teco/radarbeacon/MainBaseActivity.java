@@ -27,7 +27,7 @@ import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
 
 public abstract class MainBaseActivity extends AppCompatActivity implements RotationChangeListener,
-        MeasureFragment.OnMeasureCompleteListener, ResultFragment.ResultCallbackListener,
+        MeasureFragment.OnMeasureCompleteListener,
         TutorialDialog.OnDismissListener {
 
     private static final int azimuthBufferSize = 10;

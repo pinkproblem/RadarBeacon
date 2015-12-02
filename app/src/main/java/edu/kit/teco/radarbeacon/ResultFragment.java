@@ -1,6 +1,5 @@
 package edu.kit.teco.radarbeacon;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.content.res.Resources;
@@ -26,13 +25,13 @@ public class ResultFragment extends Fragment {
     ResultBuffer current;
     private float smoothAzimuth;
 
-    private ResultCallbackListener callbackListener;
-
     private RelativeLayout relativeLayout;
     private RelativeLayout infoRelativeLayout;
     private TextView textName;
     private TextView textMac;
     private TextView textStatus;
+
+    public enum DeviceState {ONLINE, OFFLINE, ERROR}
 
     public ResultFragment() {
         super();
@@ -69,31 +68,10 @@ public class ResultFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-//            callbackListener = (ResultCallbackListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement ResultCallbackListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        callbackListener = null;
-    }
-
     public void onSmoothAzimuthChange(float newAzimuth) {
         smoothAzimuth = newAzimuth;
         updateView();
     }
-
-//    public void restartMeasure(View view) {
-//        callbackListener.restartMeasureRequest();
-//    }
 
     public void updateResults(HashMap<BluetoothDevice, EvaluationStrategy> newResult) {
         fillResultBuffer(newResult);
@@ -102,15 +80,19 @@ public class ResultFragment extends Fragment {
     private void fillResultBuffer(HashMap<BluetoothDevice, EvaluationStrategy> newResult) {
         results.clear();
         for (final BluetoothDevice device : newResult.keySet()) {
+
+            final ResultBuffer buffer = new ResultBuffer();
+
             EvaluationStrategy ev = newResult.get(device);
             float res;
             try {
                 res = ev.calculate();
+                buffer.state = DeviceState.ONLINE;
             } catch (InsufficientInputException e) {
-                res = 0;
+                res = (float) (Math.random() * (Math.PI - 0.1) - Math.PI / 2);
+                buffer.state = DeviceState.ERROR;
             }
 
-            final ResultBuffer buffer = new ResultBuffer();
             buffer.device = device;
             buffer.direction = res;
             buffer.evaluationStrategy = ev;
@@ -197,6 +179,52 @@ public class ResultFragment extends Fragment {
         }
     }
 
+    private void updateDeviceInfo() {
+        textStatus.setText(getStateString(current.state));
+        textStatus.setTextColor(getStateColor(current.state));
+        textName.setText(current.device.getName());
+        textMac.setText(getString(R.string.mac) + ": " + current.device
+                .getAddress());
+    }
+
+    private String getStateString(DeviceState state) {
+        String text;
+        switch (state) {
+            case ONLINE:
+                text = getString(R.string.online);
+                break;
+            case OFFLINE:
+                text = getString(R.string.offline);
+                break;
+            case ERROR:
+                text = getString(R.string.error);
+                break;
+            default:
+                text = getString(R.string.error);
+                break;
+        }
+        return text;
+    }
+
+    private int getStateColor(DeviceState state) {
+        int color;
+        switch (state) {
+            case ONLINE:
+                color = getResources().getColor(R.color.lightgreen);
+                break;
+            case OFFLINE:
+                color = getResources().getColor(R.color.lightred);
+                break;
+            case ERROR:
+                color = getResources().getColor(R.color.lightred);
+                break;
+            default:
+                color = getResources().getColor(R.color.lightred);
+                break;
+        }
+        return color;
+    }
+
     private float dpToPx(float dp) {
         Resources r = getResources();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics
@@ -204,32 +232,58 @@ public class ResultFragment extends Fragment {
     }
 
     protected void onDeviceClicked(ResultBuffer clicked) {
+        //reset previous arrow
         if (current != null) {
             current.arrow.setImageResource(R.drawable.arrow2);
         }
 
-        textName.setText(clicked.device.getName());
-        textMac.setText(getActivity().getResources().getString(R.string.mac) + ": " + clicked.device
-                .getAddress());
-        textStatus.setText("ONLINE");//TODO
+        current = clicked;
 
+        updateDeviceInfo();
         infoRelativeLayout.setVisibility(View.VISIBLE);
 
         clicked.arrow.setImageResource(R.drawable.arrow2_dark);
-
-        current = clicked;
         relativeLayout.bringChildToFront(clicked.arrow);
     }
 
-    public interface ResultCallbackListener {
-        /**
-         * Is called if the user requested (clicked the button) to restart the measurement process.
-         */
-//        public void restartMeasureRequest();
+    public void onDeviceConnected(BluetoothDevice device) {
+        final ResultBuffer buffer = getBuffer(device);
+        if (buffer == null) return;
+
+        buffer.state = DeviceState.ONLINE;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateDeviceInfo();
+            }
+        });
+    }
+
+    public void onDeviceDisconnected(BluetoothDevice device) {
+        final ResultBuffer buffer = getBuffer(device);
+        if (buffer == null) return;
+
+        buffer.state = DeviceState.OFFLINE;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateDeviceInfo();
+            }
+        });
+    }
+
+    private ResultBuffer getBuffer(BluetoothDevice device) {
+        for (ResultBuffer res : results) {
+            if (res.device.equals(device)) {
+                return res;
+            }
+        }
+        return null;
     }
 
     class ResultBuffer {
         BluetoothDevice device;
+        DeviceState state;
         float direction;
         EvaluationStrategy evaluationStrategy;
         ImageView arrow;

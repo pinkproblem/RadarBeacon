@@ -99,12 +99,16 @@ public class ConnectedMainActivity extends MainBaseActivity implements Connectio
 
     @Override
     public void onDeviceConnected(BluetoothDevice device) {
-
+        if (currentFragment == resultFragment) {
+            resultFragment.onDeviceConnected(device);
+        }
     }
 
     @Override
     public void onDeviceDisconnected(BluetoothDevice device) {
-
+        if (currentFragment == resultFragment) {
+            resultFragment.onDeviceDisconnected(device);
+        }
     }
 
     @Override

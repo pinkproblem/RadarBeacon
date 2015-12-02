@@ -4,8 +4,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.os.Handler;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -46,7 +47,13 @@ public class UnconnectedMainActivity extends MainBaseActivity {
     protected void onStart() {
         super.onStart();
 
-        startMeasurement();
+        SharedPreferences preferences = getSharedPreferences(TutorialDialog
+                .PREF_TUT_MEASURE, 0);
+        boolean showTutorial = preferences.getBoolean(TutorialDialog.PREF_TUT_MEASURE, true);
+
+        if (!showTutorial) {
+            startMeasurement();
+        }
     }
 
     @Override

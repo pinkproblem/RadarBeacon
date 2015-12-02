@@ -1,12 +1,16 @@
 package edu.kit.teco.radarbeacon;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothDevice;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +27,8 @@ import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
 
 public abstract class MainBaseActivity extends AppCompatActivity implements RotationChangeListener,
-        MeasureFragment.OnMeasureCompleteListener, ResultFragment.ResultCallbackListener {
+        MeasureFragment.OnMeasureCompleteListener, ResultFragment.ResultCallbackListener,
+        TutorialDialog.OnDismissListener {
 
     private static final int azimuthBufferSize = 10;
     private CompassManager compassManager;
@@ -118,7 +123,42 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
             resultFragment.updateResults(results);
         } else if (fragment == measureFragment) {
             currentFragment = measureFragment;
+
+            SharedPreferences preferences = getSharedPreferences(TutorialDialog
+                    .PREF_TUT_MEASURE, 0);
+            boolean showTutorial = preferences.getBoolean(TutorialDialog.PREF_TUT_MEASURE, true);
+
+            if (showTutorial) {
+                stopMeasurement();
+                String text1 = getString(R.string.tutorial_measure_1);
+                String text2 = getString(R.string.tutorial_measure_2);
+                String text3 = getString(R.string.tutorial_measure_3);
+                String text4 = getString(R.string.tutorial_measure_4);
+
+                SpannableString ss1 = TutorialDialog.createIndentedText(text1, 0, 0);
+                SpannableString ss2 = TutorialDialog.createIndentedText(text2, 50, 65);
+                SpannableString ss3 = TutorialDialog.createIndentedText(text3, 50, 65);
+                SpannableString ss4 = TutorialDialog.createIndentedText(text4, 50, 65);
+
+                SpannableStringBuilder text = new SpannableStringBuilder();
+                text.append(ss1);
+                text.append(ss2);
+                text.append(ss3);
+                text.append(ss4);
+
+                String button = getString(R.string.go);
+                String title = getString(R.string.measurement);
+                DialogFragment dialog = TutorialDialog.getInstance(text, button, title);
+                dialog.show(getFragmentManager(), "measure_tutorial");
+            } else {
+                startMeasurement();
+            }
         }
+    }
+
+    @Override
+    public void onDismissTutorial() {
+        startMeasurement();
     }
 
     @Override

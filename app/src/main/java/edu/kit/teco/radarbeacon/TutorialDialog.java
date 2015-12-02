@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.LeadingMarginSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,27 +22,40 @@ public class TutorialDialog extends DialogFragment {
     private static final String DIALOG_EXTRA_TEXT = "dialog_extra_text";
     public static final String PREF_TUT_MEASURE = "preftutmeasure";
 
-    private String text;
+    private SpannableStringBuilder text;
+    private String title;
+    private String buttonText;
 
     private TextView textView;
     private CheckBox checkbox;
 
     public static TutorialDialog getInstance(String text) {
+//        Bundle bundle = new Bundle();
+//        bundle.putString(DIALOG_EXTRA_TEXT, text);
+//        instance.setArguments(bundle);
+
+        return getInstance(text, "Okay", "Tutorial");
+    }
+
+    public static TutorialDialog getInstance(String text, String buttonText, String title) {
         TutorialDialog instance = new TutorialDialog();
 
-        Bundle bundle = new Bundle();
-        bundle.putString(DIALOG_EXTRA_TEXT, text);
-        instance.setArguments(bundle);
+        instance.text = new SpannableStringBuilder(text);
+        instance.buttonText = buttonText;
+        instance.title = title;
 
         return instance;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static TutorialDialog getInstance(SpannableStringBuilder text, String buttonText, String
+            title) {
+        TutorialDialog instance = new TutorialDialog();
 
-        Bundle args = getArguments();
-        text = args.getString(DIALOG_EXTRA_TEXT);
+        instance.text = text;
+        instance.buttonText = buttonText;
+        instance.title = title;
+
+        return instance;
     }
 
     @Override
@@ -53,9 +69,9 @@ public class TutorialDialog extends DialogFragment {
         checkbox = (CheckBox) view.findViewById(R.id.tutorial_checkbox);
         textView.setText(text);
 
-        builder.setTitle(R.string.dialog_title_select_devices)
+        builder.setTitle(title)
                 .setView(view)
-                .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(buttonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         //save the "dont show again" preference
@@ -70,5 +86,24 @@ public class TutorialDialog extends DialogFragment {
                 });
 
         return builder.create();
+    }
+
+    public static SpannableString createIndentedText(String text, int marginFirstLine, int
+            marginNextLines) {
+        SpannableString result = new SpannableString(text);
+        result.setSpan(new LeadingMarginSpan.Standard(marginFirstLine, marginNextLines), 0, text.length(), 0);
+        return result;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (getActivity() instanceof OnDismissListener) {
+            ((OnDismissListener) getActivity()).onDismissTutorial();
+        }
+    }
+
+    public interface OnDismissListener {
+        public void onDismissTutorial();
     }
 }

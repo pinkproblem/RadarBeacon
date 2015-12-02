@@ -67,6 +67,7 @@ public class MeasureFragment extends Fragment {
         numberOfDevices = getArguments().getInt(EXTRA_DEVICE_COUNT, 1);
     }
 
+
     public void rotateView(float angle) {
         if (measureDrawable != null) {
             measureDrawable.setRotation(angle);

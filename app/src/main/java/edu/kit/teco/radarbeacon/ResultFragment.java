@@ -23,6 +23,7 @@ import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
 public class ResultFragment extends Fragment {
 
     ArrayList<ResultBuffer> results;
+    ResultBuffer current;
     private float smoothAzimuth;
 
     private ResultCallbackListener callbackListener;
@@ -109,7 +110,7 @@ public class ResultFragment extends Fragment {
                 res = 0;
             }
 
-            ResultBuffer buffer = new ResultBuffer();
+            final ResultBuffer buffer = new ResultBuffer();
             buffer.device = device;
             buffer.direction = res;
             buffer.evaluationStrategy = ev;
@@ -119,7 +120,7 @@ public class ResultFragment extends Fragment {
             arrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onDeviceClicked(device, arrow);
+                    onDeviceClicked(buffer);
                 }
             });
             buffer.arrow = arrow;
@@ -127,11 +128,11 @@ public class ResultFragment extends Fragment {
             TextView textView = new TextView(getActivity());
             String text = String.format("%.1f", ev.getDistance()) + "m";
             textView.setText(text);
-            textView.setTextSize(30);
+            textView.setTextSize(25);
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onDeviceClicked(device, arrow);
+                    onDeviceClicked(buffer);
                 }
             });
             buffer.text = textView;
@@ -202,15 +203,22 @@ public class ResultFragment extends Fragment {
                 ());
     }
 
-    protected void onDeviceClicked(BluetoothDevice device, ImageView arrow) {
-        textName.setText(device.getName());
-        textMac.setText(getActivity().getResources().getString(R.string.mac) + ": " + device
+    protected void onDeviceClicked(ResultBuffer clicked) {
+        if (current != null) {
+            current.arrow.setImageResource(R.drawable.arrow2);
+        }
+
+        textName.setText(clicked.device.getName());
+        textMac.setText(getActivity().getResources().getString(R.string.mac) + ": " + clicked.device
                 .getAddress());
         textStatus.setText("ONLINE");//TODO
 
         infoRelativeLayout.setVisibility(View.VISIBLE);
 
-        arrow.setImageResource(R.drawable.arrow2_dark);
+        clicked.arrow.setImageResource(R.drawable.arrow2_dark);
+
+        current = clicked;
+        relativeLayout.bringChildToFront(clicked.arrow);
     }
 
     public interface ResultCallbackListener {

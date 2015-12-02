@@ -96,7 +96,7 @@ public class ConnectionManager {
             return;
         }
         if (measurementRunning) {
-            return;
+            readRssiHandler.removeCallbacksAndMessages(null);
         }
         measurementRunning = true;
 

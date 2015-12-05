@@ -29,4 +29,5 @@
     <string name="online">ONLINE</string>
     <string name="offline">OFFLINE</string>
     <string name="error">ERROR</string>
+    <string name="calculating">Calculating...</string>
 </resources>

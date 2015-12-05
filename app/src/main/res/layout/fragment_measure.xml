@@ -2,7 +2,8 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="edu.kit.teco.radarbeacon.MeasureFragment">
+                tools:context="edu.kit.teco.radarbeacon.MeasureFragment"
+                android:id="@+id/measure_container">
 
     <edu.kit.teco.radarbeacon.MeasureDrawable
         android:layout_width="wrap_content"
@@ -10,6 +11,17 @@
         android:id="@+id/measure_view"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30sp"
+        android:text="@string/calculating"
+        android:id="@+id/measure_calculating"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"/>
 
     <ImageView
         android:layout_width="wrap_content"

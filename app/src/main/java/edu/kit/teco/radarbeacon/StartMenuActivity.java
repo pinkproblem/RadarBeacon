@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
     private Button connectingButton;
     private CheckBox energyCheckbox;
     private ProgressBar connectionProgress;
+    private RelativeLayout layout;
 
     private ConnectionManager connectionManager;
 
@@ -65,6 +67,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         connectingButton = (Button) findViewById(R.id.button_connecting);
         energyCheckbox = (CheckBox) findViewById(R.id.checkbox_save_energy);
         connectionProgress = (ProgressBar) findViewById(R.id.connection_progress);
+        layout = (RelativeLayout) findViewById(R.id.start_container);
 
         connectingButton.setVisibility(View.INVISIBLE);
         connectionProgress.setVisibility(View.INVISIBLE);

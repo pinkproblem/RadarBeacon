@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.kit.teco.radarbeacon.animation.AnimationListenerAdapter;
+import edu.kit.teco.radarbeacon.animation.RadarRevealAnimation;
 import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
 import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
@@ -31,19 +34,9 @@ public class ResultFragment extends Fragment {
     private TextView textMac;
     private TextView textStatus;
 
+    private boolean showResults;
+
     public enum DeviceState {ONLINE, OFFLINE, ERROR}
-
-    public ResultFragment() {
-        super();
-        results = new ArrayList<>();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,18 +52,36 @@ public class ResultFragment extends Fragment {
 
         infoRelativeLayout.setVisibility(View.INVISIBLE);
 
-        try {
-            updateView();
-        } catch (NullPointerException e) {
-            //TODO return to main menu or something
-        }
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        RadarRevealAnimation ani = new RadarRevealAnimation(getActivity());
+        ani.setRevealDirection(RadarRevealAnimation.RevealDirection.OPEN);
+        relativeLayout.addView(ani);
+        relativeLayout.bringChildToFront(ani);
+        ani.getAnimation().setAnimationListener(new AnimationListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                try {
+                    showResults = true;
+                    updateView();
+                } catch (NullPointerException e) {
+                    //TODO return to main menu or something
+                }
+            }
+        });
+        ani.getAnimation().startNow();
     }
 
     public void onSmoothAzimuthChange(float newAzimuth) {
         smoothAzimuth = newAzimuth;
-        updateView();
+        if (showResults) {
+            updateView();
+        }
     }
 
     public void updateResults(HashMap<BluetoothDevice, EvaluationStrategy> newResult) {
@@ -78,7 +89,7 @@ public class ResultFragment extends Fragment {
     }
 
     private void fillResultBuffer(HashMap<BluetoothDevice, EvaluationStrategy> newResult) {
-        results.clear();
+        results = new ArrayList<>();
         for (final BluetoothDevice device : newResult.keySet()) {
 
             final ResultBuffer buffer = new ResultBuffer();

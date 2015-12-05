@@ -3,10 +3,19 @@ package edu.kit.teco.radarbeacon;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import edu.kit.teco.radarbeacon.animation.AnimationListenerAdapter;
+import edu.kit.teco.radarbeacon.animation.RadarRevealAnimation;
 import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 
 /**
@@ -28,14 +37,15 @@ public class MeasureFragment extends Fragment {
     private boolean measureComplete;
 
     private MeasureDrawable measureDrawable;
+    private ImageView icon;
+    private TextView textCalculating;
+    private RelativeLayout layout;
+
+    private Handler finalAnimationHandler;
 
     public static MeasureFragment getInstance(int numberOfDevices) {
         MeasureFragment instance = new MeasureFragment();
-
-        Bundle args = new Bundle();
-        args.putInt(EXTRA_DEVICE_COUNT, numberOfDevices);
-        instance.setArguments(args);
-
+        instance.numberOfDevices = numberOfDevices;
         return instance;
     }
 
@@ -50,38 +60,33 @@ public class MeasureFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        inputCount = new int[NUMBER_OF_SEGMENTS];
+        finalAnimationHandler = new Handler(Looper.getMainLooper());
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_measure, container, false);
         measureDrawable = (MeasureDrawable) view.findViewById(R.id.measure_view);
         measureDrawable.setSegmentCount(NUMBER_OF_SEGMENTS);
 
+        icon = (ImageView) view.findViewById(R.id.measure_icon);
+        textCalculating = (TextView) view.findViewById(R.id.measure_calculating);
+        layout = (RelativeLayout) view.findViewById(R.id.measure_container);
+
+
         return view;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        inputCount = new int[NUMBER_OF_SEGMENTS];
-        numberOfDevices = getArguments().getInt(EXTRA_DEVICE_COUNT, 1);
-    }
-
-
     public void rotateView(float angle) {
-        if (measureDrawable != null) {
+        if (measureDrawable != null && !measureComplete) {
             measureDrawable.setRotation(angle);
         }
     }
-
-//    public void onAzimuthChange(float newAzimuth) {
-//        int index = CircleUtils.getCircleSegment(newAzimuth, NUMBER_OF_SEGMENTS);
-//        inputCount[index]++;
-//
-//        if (inputCount[index] >= MIN_VALUES_PER_SEGMENT * numberOfDevices) {
-//            measureDrawable.tag(newAzimuth);
-//        }
-//    }
 
     public void addSample(float azimuth, int rssi) {
 
@@ -99,8 +104,14 @@ public class MeasureFragment extends Fragment {
 
         //if all segments are done, call the listener
         if (isMeasureComplete()) {
-            measureListener.onMeasureComplete();
+
             measureComplete = true;
+            displayAnimation(new AnimationListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    measureListener.onMeasureComplete();
+                }
+            });
         }
     }
 
@@ -115,6 +126,35 @@ public class MeasureFragment extends Fragment {
             }
         }
         return true;
+    }
+
+    private void displayAnimation(Animation.AnimationListener animationListener) {
+
+        Animation animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), android.R
+                .anim.fade_out);
+        Animation animFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext()
+                , android.R
+                .anim.fade_in);
+        animFadeOut.setAnimationListener(new AnimationListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                icon.setVisibility(View.INVISIBLE);
+            }
+        });
+        icon.setAnimation(animFadeOut);
+        icon.setVisibility(View.GONE);
+        animFadeIn.setAnimationListener(new AnimationListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                textCalculating.setVisibility(View.VISIBLE);
+            }
+        });
+        textCalculating.setAnimation(animFadeIn);
+
+        RadarRevealAnimation ani = new RadarRevealAnimation(getActivity());
+        layout.addView(ani, 1);
+        ani.getAnimation().setAnimationListener(animationListener);
+        ani.getAnimation().startNow();
     }
 
     public interface OnMeasureCompleteListener {

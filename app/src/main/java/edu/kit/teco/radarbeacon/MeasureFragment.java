@@ -3,8 +3,6 @@ package edu.kit.teco.radarbeacon;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +39,6 @@ public class MeasureFragment extends Fragment {
     private TextView textCalculating;
     private RelativeLayout layout;
 
-    private Handler finalAnimationHandler;
-
     public static MeasureFragment getInstance(int numberOfDevices) {
         MeasureFragment instance = new MeasureFragment();
         instance.numberOfDevices = numberOfDevices;
@@ -64,7 +60,6 @@ public class MeasureFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         inputCount = new int[NUMBER_OF_SEGMENTS];
-        finalAnimationHandler = new Handler(Looper.getMainLooper());
     }
 
     @Override

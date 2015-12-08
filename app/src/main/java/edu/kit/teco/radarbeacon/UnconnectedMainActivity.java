@@ -99,14 +99,19 @@ public class UnconnectedMainActivity extends MainBaseActivity {
 
     private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
-        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+        public void onLeScan(BluetoothDevice device, final int rssi, byte[] scanRecord) {
             if (rssi > 0) {
                 return;
             }
 
             addSample(device, rssi);
             if (currentFragment == measureFragment) {
-                measureFragment.addSample(getAzimuth(), rssi);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        measureFragment.addSample(getAzimuth(), rssi);
+                    }
+                });
             }
         }
     };

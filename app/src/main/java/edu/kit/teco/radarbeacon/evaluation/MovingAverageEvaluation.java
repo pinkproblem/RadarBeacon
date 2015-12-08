@@ -148,6 +148,9 @@ public class MovingAverageEvaluation implements EvaluationStrategy {
 
     @Override
     public double getDistance() {
+        if (samples.size() == 0) {
+            return 0;
+        }
         //simple solution: since false high rssi values are unlikely, and the calculation is more
         // exact with higher rssi values, we just take the maximum rssi and transform it to the
         // distance

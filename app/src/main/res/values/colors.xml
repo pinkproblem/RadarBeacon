@@ -2,7 +2,7 @@
 <resources>
     <item name="lightgreen" type="color">#ff98f098</item>
     <item name="lightred" type="color">#fff09e98</item>
-    <item name="blue" type="color">#ff33abff</item>
+    <item name="blue" type="color">#ff1c8cdb</item>
     <item name="darkblue" type="color">#ff06528c</item>
     <item name="darkgrey" type="color">#ff181818</item>
     <item name="pink" type="color">#ffdd188b</item>

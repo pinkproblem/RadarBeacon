@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="CustomTheme" parent="Theme.AppCompat.Light">
+    <style name="CustomTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <item name="android:alertDialogTheme">@style/CustomDialogTheme</item>
         <item name="android:dialogTheme">@style/CustomDialogTheme</item>
         <item name="android:alertDialogStyle">@style/CustomDialogTheme</item>
@@ -11,7 +11,7 @@
         <item name="colorAccent">@color/darkgrey</item>
     </style>
 
-    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="CustomDialogTheme" parent="Base.Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowTitleStyle">@style/DialogTitleStyle</item>
         <!--<item name="android:buttonBarStyle">@style/DialogButtonStyle</item>-->
         <!--<item name="android:buttonBarButtonStyle">@style/DialogButtonStyle</item>-->

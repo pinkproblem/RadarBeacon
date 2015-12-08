@@ -68,7 +68,7 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
         //activate the measure fragment
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.main_container, measureFragment);
+        fragmentTransaction.replace(R.id.main_container, measureFragment);
         fragmentTransaction.commit();
         currentFragment = measureFragment;
         //as long as the app is measuring, the screen should not turn off

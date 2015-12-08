@@ -48,6 +48,8 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
     private RelativeLayout layout;
 
     private ConnectionManager connectionManager;
+    private boolean intentTriggered; //whether onStop came from my intent or pressing the home
+    // button or something
 
 
     @Override
@@ -85,6 +87,8 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
 
         scanHandler.post(startScanRunnable);
         scanHandler.post(clearRunnable);
+
+        intentTriggered = false;
     }
 
     @Override
@@ -95,6 +99,11 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         scanHandler.removeCallbacksAndMessages(null);
         //stop le scan
         btAdapter.stopLeScan(scanCallback);
+
+        //stop connection if stop did not come from my intent
+        if (!intentTriggered) {
+            connectionManager.disconnect();
+        }
     }
 
     @Override
@@ -163,6 +172,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
                     Intent intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
                     //add selected devices
                     intent.putExtra(EXTRA_DEVICES, selection);
+                    intentTriggered = true;
                     startActivity(intent);
                 }
             });

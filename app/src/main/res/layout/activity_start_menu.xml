@@ -28,16 +28,6 @@
         android:layout_centerHorizontal="true"
         android:width="300dp"/>
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/checkbox_save_energy"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:id="@+id/checkbox_save_energy"
-        android:layout_marginTop="14dp"
-        android:layout_below="@+id/connection_progress"
-        android:layout_centerHorizontal="true"/>
-
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
@@ -48,5 +38,33 @@
         android:layout_alignRight="@+id/button"
         android:layout_centerHorizontal="true"
         android:indeterminate="true"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_below="@+id/connection_progress"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/icon_help"
+            android:layout_alignTop="@+id/checkbox_save_energy"
+            android:layout_alignBottom="@+id/checkbox_save_energy"
+            android:layout_toRightOf="@id/checkbox_save_energy"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/help"
+            android:adjustViewBounds="true"
+            android:onClick="showVariantInfo"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checkbox_save_energy"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:id="@+id/checkbox_save_energy"
+            android:layout_marginLeft="20dp"/>
+    </RelativeLayout>
 
 </RelativeLayout>

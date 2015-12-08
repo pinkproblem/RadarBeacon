@@ -30,4 +30,8 @@
     <string name="offline">OFFLINE</string>
     <string name="error">ERROR</string>
     <string name="calculating">Calculating...</string>
+    <string name="okay">Okay</string>
+    <string name="variant_info">NOT RECOMMENDED FOR REGULAR USE\nIs significantly slower.
+        Choose this if you do not wish a connection with the remote device or to save
+        energy.</string>
 </resources>

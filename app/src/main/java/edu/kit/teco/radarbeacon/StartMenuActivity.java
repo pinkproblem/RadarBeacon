@@ -1,5 +1,6 @@
 package edu.kit.teco.radarbeacon;
 
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -116,6 +117,11 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showVariantInfo(View view) {
+        DialogFragment infoDialog = TextDialog.getInstance(getString(R.string.variant_info));
+        infoDialog.show(getFragmentManager(), "variant_info");
     }
 
     public void startScan(View view) {

@@ -33,6 +33,8 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
     private static final int SCAN_PAUSE = 5000;
     //time until a device is deleted if no new advertisement
     private static final int DEVICE_TIMEOUT = 16000;
+    //time until a connection attempt is interrupted for taking to long
+    private static final int CONNECT_TIMEOUT = 10000;
 
     private BluetoothAdapter btAdapter;
     private Handler scanHandler;
@@ -48,6 +50,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
     private RelativeLayout layout;
 
     private ConnectionManager connectionManager;
+    private Handler connectionTimeoutHandler;
     private boolean intentTriggered; //whether onStop came from my intent or pressing the home
     // button or something
 
@@ -76,6 +79,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
         connectionProgress.setVisibility(View.INVISIBLE);
 
         connectionManager = ConnectionManager.getInstance(this);
+        connectionTimeoutHandler = new Handler();
     }
 
     @Override
@@ -169,6 +173,8 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
 
                 @Override
                 public void onAllDevicesConnected() {
+                    connectionTimeoutHandler.removeCallbacksAndMessages(null);
+
                     Intent intent = new Intent(StartMenuActivity.this, ConnectedMainActivity.class);
                     //add selected devices
                     intent.putExtra(EXTRA_DEVICES, selection);
@@ -179,6 +185,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
             connectingButton.setVisibility(View.VISIBLE);
             connectionProgress.setVisibility(View.VISIBLE);
             connectionManager.connect();
+            connectionTimeoutHandler.postDelayed(interruptConnectRunnable, CONNECT_TIMEOUT);
         } else {
             Intent intent = new Intent(StartMenuActivity.this, UnconnectedMainActivity.class);
             //add selected devices
@@ -260,6 +267,17 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
                 selectDialog.update(devices);
             }
             scanHandler.postDelayed(clearRunnable, DEVICE_TIMEOUT);
+        }
+    };
+
+    Runnable interruptConnectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            connectionManager.disconnect();
+            connectingButton.setVisibility(View.INVISIBLE);
+            connectionProgress.setVisibility(View.INVISIBLE);
+            DialogFragment dialog = TextDialog.getInstance(getString(R.string.connect_timeout));
+            dialog.show(getFragmentManager(), "interrupt_connect");
         }
     };
 }

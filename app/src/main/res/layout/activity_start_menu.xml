@@ -26,7 +26,8 @@
         android:id="@+id/button_connecting"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:width="300dp"/>
+        android:width="300dp"
+        android:onClick="cancelConnection"/>
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"

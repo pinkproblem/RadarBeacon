@@ -150,6 +150,12 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
 
     }
 
+    public void cancelConnection(View view) {
+        connectionManager.disconnect();
+        connectingButton.setVisibility(View.INVISIBLE);
+        connectionProgress.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void onConfirmSelection(final ArrayList<BluetoothDevice> selection) {
 

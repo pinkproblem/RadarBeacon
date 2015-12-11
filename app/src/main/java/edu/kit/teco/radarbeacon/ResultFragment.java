@@ -2,6 +2,7 @@ package edu.kit.teco.radarbeacon;
 
 import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -35,8 +36,15 @@ public class ResultFragment extends Fragment {
     private TextView textStatus;
 
     private boolean showResults;
+    private boolean showAnimation;
 
     public enum DeviceState {ONLINE, OFFLINE, ERROR}
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        showAnimation = true;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,22 +67,39 @@ public class ResultFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        RadarRevealAnimation ani = new RadarRevealAnimation(getActivity());
-        ani.setRevealDirection(RadarRevealAnimation.RevealDirection.OPEN);
-        relativeLayout.addView(ani);
-        relativeLayout.bringChildToFront(ani);
-        ani.getAnimation().setAnimationListener(new AnimationListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                try {
+        if (showAnimation) {
+            RadarRevealAnimation ani = new RadarRevealAnimation(getActivity());
+            ani.setRevealDirection(RadarRevealAnimation.RevealDirection.OPEN);
+            relativeLayout.addView(ani);
+            relativeLayout.bringChildToFront(ani);
+            ani.getAnimation().setAnimationListener(new AnimationListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
                     showResults = true;
-                    updateView();
-                } catch (NullPointerException e) {
-                    //TODO return to main menu or something
+                    showAnimation = false;
+                    try {
+                        updateView();
+
+                        SharedPreferences preferences = getActivity().getSharedPreferences
+                                (TutorialDialog
+                                        .PREF_TUT_RESULT, 0);
+                        boolean showTutorial = preferences.getBoolean(TutorialDialog.PREF_TUT_RESULT,
+                                true);
+                        if (showTutorial) {
+                            TutorialDialog.getInstance(TutorialDialog
+                                    .PREF_TUT_RESULT, getString(R.string.tutorial_result)).show
+                                    (getFragmentManager(), "tutresult");
+                        }
+                    } catch (NullPointerException e) {
+                        //TODO return to main menu or something
+                    }
                 }
-            }
-        });
-        ani.getAnimation().startNow();
+            });
+            ani.getAnimation().startNow();
+        } else {
+            showResults = true;
+            updateView();
+        }
     }
 
     public void onSmoothAzimuthChange(float newAzimuth) {
@@ -191,11 +216,13 @@ public class ResultFragment extends Fragment {
     }
 
     private void updateDeviceInfo() {
-        textStatus.setText(getStateString(current.state));
-        textStatus.setTextColor(getStateColor(current.state));
-        textName.setText(current.device.getName());
-        textMac.setText(getString(R.string.mac) + ": " + current.device
-                .getAddress());
+        if (current != null) {
+            textStatus.setText(getStateString(current.state));
+            textStatus.setTextColor(getStateColor(current.state));
+            textName.setText(current.device.getName());
+            textMac.setText(getString(R.string.mac) + ": " + current.device
+                    .getAddress());
+        }
     }
 
     private String getStateString(DeviceState state) {

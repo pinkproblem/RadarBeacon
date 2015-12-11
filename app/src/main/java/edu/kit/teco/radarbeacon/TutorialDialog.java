@@ -19,8 +19,10 @@ import android.widget.TextView;
  */
 public class TutorialDialog extends DialogFragment {
 
-    private static final String DIALOG_EXTRA_TEXT = "dialog_extra_text";
     public static final String PREF_TUT_MEASURE = "preftutmeasure";
+    public static final String PREF_TUT_RESULT = "preftutresult";
+
+    private String preference;
 
     private SpannableStringBuilder text;
     private String title;
@@ -29,17 +31,15 @@ public class TutorialDialog extends DialogFragment {
     private TextView textView;
     private CheckBox checkbox;
 
-    public static TutorialDialog getInstance(String text) {
-//        Bundle bundle = new Bundle();
-//        bundle.putString(DIALOG_EXTRA_TEXT, text);
-//        instance.setArguments(bundle);
-
-        return getInstance(text, "Okay", "Tutorial");
+    public static TutorialDialog getInstance(String preference, String text) {
+        return getInstance(preference, text, "Okay", null);
     }
 
-    public static TutorialDialog getInstance(String text, String buttonText, String title) {
+    public static TutorialDialog getInstance(String preference, String text, String buttonText,
+                                             String title) {
         TutorialDialog instance = new TutorialDialog();
 
+        instance.preference = preference;
         instance.text = new SpannableStringBuilder(text);
         instance.buttonText = buttonText;
         instance.title = title;
@@ -47,10 +47,11 @@ public class TutorialDialog extends DialogFragment {
         return instance;
     }
 
-    public static TutorialDialog getInstance(SpannableStringBuilder text, String buttonText, String
-            title) {
+    public static TutorialDialog getInstance(String preference, SpannableStringBuilder text, String
+            buttonText, String title) {
         TutorialDialog instance = new TutorialDialog();
 
+        instance.preference = preference;
         instance.text = text;
         instance.buttonText = buttonText;
         instance.title = title;
@@ -77,9 +78,9 @@ public class TutorialDialog extends DialogFragment {
                         //save the "dont show again" preference
                         if (checkbox.isChecked()) {
                             SharedPreferences pref = getActivity().getSharedPreferences
-                                    (PREF_TUT_MEASURE, 0);
+                                    (preference, 0);
                             SharedPreferences.Editor editor = pref.edit();
-                            editor.putBoolean(PREF_TUT_MEASURE, false);
+                            editor.putBoolean(preference, false);
                             editor.apply();
                         }
                     }

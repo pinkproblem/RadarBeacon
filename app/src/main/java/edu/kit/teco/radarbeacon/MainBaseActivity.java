@@ -148,7 +148,9 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
 
                 String button = getString(R.string.go);
                 String title = getString(R.string.measurement);
-                DialogFragment dialog = TutorialDialog.getInstance(text, button, title);
+                DialogFragment dialog = TutorialDialog.getInstance(TutorialDialog
+                                .PREF_TUT_MEASURE, text, button,
+                        title);
                 dialog.show(getFragmentManager(), "measure_tutorial");
             } else {
                 startMeasurement();

@@ -35,4 +35,5 @@
         Choose this if you do not wish a connection with the remote device or to save
         energy.</string>
     <string name="connect_timeout">Couldn\'t connect to all devices.\nTry again or consider using the \"Low Energy\" option.</string>
+    <string name="tutorial_result">Please notice: Results do NOT refresh automatically. If you move to another position, consider restarting the scan.</string>
 </resources>

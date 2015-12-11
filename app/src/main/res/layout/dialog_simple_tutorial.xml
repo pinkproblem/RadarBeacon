@@ -20,8 +20,6 @@
         android:id="@+id/tutorial_text"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:paddingBottom="20dp"/>
+        android:padding="20dp"/>
 </RelativeLayout>

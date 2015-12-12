@@ -3,6 +3,7 @@ package edu.kit.teco.radarbeacon;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,14 +79,17 @@ public class MeasureFragment extends Fragment {
     }
 
     public void rotateView(float angle) {
-        if (measureDrawable != null && !measureComplete) {
-            measureDrawable.setRotation(angle);
+        if (measureDrawable == null || measureComplete) {
+            Log.d("radarbeacon", "MeasureFragment: rotation dropped: " + angle);
+            return;
         }
+        measureDrawable.setRotation(angle);
     }
 
     public void addSample(float azimuth, int rssi) {
 
-        if (measureComplete) {
+        if (measureComplete || measureDrawable == null || measureListener == null) {
+            Log.d("radarbeacon", "Sample dropped: azimuth " + azimuth + " rssi " + rssi);
             return;
         }
 

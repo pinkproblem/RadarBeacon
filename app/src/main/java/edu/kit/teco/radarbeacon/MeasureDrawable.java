@@ -3,14 +3,11 @@ package edu.kit.teco.radarbeacon;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.ArcShape;
 import android.util.AttributeSet;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -23,7 +20,7 @@ public class MeasureDrawable extends View {
 
     private static final int defaultSegmentCount = 8;
 
-    private int taggedColor = 0xff98f098;
+    private int taggedColor = 0xff98f098;//TODO move colors
     private int untaggedColor = 0xfff09e98;
     private final int space = 4; //space between segments in degree
 
@@ -52,21 +49,13 @@ public class MeasureDrawable extends View {
         backgroundColor = array.getColor(0, 0xFF00FF);
         array.recycle();
 
-        //obtain screen dimensions
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidth = size.x;
-        int screenHeight = size.y;
-
-//        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-//        int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
-
-        int centerX = screenWidth / 2;
-        int centerY = screenHeight / 2 - 70;
+        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        int centerX = Utils.getCenterX(context);
+        int centerY = Utils.getCenterY(context);
         int width = (int) (screenWidth * 0.95);
-        int innerRadius = (int) (screenWidth * 0.3);
+        //int innerRadius = (int) (screenWidth * 0.3);
+        int ringWidth = (int) Utils.dpToPx(context, 100);
+        int innerRadius = width / 2 - ringWidth / 2;
 
         top = centerY - width / 2;
         left = centerX - width / 2;

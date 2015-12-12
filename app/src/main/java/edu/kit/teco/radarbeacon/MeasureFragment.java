@@ -36,6 +36,7 @@ public class MeasureFragment extends Fragment {
     private boolean measureComplete;
 
     private MeasureDrawable measureDrawable;
+    private ImageView mark;
     private ImageView icon;
     private TextView textCalculating;
     private RelativeLayout layout;
@@ -71,9 +72,18 @@ public class MeasureFragment extends Fragment {
         measureDrawable.setSegmentCount(NUMBER_OF_SEGMENTS);
 
         icon = (ImageView) view.findViewById(R.id.measure_icon);
+        mark = (ImageView) view.findViewById(R.id.measure_mark);
         textCalculating = (TextView) view.findViewById(R.id.measure_calculating);
         layout = (RelativeLayout) view.findViewById(R.id.measure_container);
 
+        int centerX = Utils.getCenterX(getActivity());
+        int centerY = Utils.getCenterY(getActivity());
+        int markSize = (int) Utils.dpToPx(getActivity(), 100);
+        int screenHeight = getActivity().getResources().getDisplayMetrics().heightPixels;
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(markSize, markSize);
+        params.leftMargin = (int) (centerX - markSize / 2);
+        params.topMargin = (int) (centerY - 0.95 * screenHeight - 10);
+        mark.setLayoutParams(params);
 
         return view;
     }

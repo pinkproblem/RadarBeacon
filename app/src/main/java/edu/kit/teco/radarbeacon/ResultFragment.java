@@ -3,9 +3,7 @@ package edu.kit.teco.radarbeacon;
 import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,13 +161,12 @@ public class ResultFragment extends Fragment {
 
         //add arrow and distance for every device
         for (final ResultBuffer buffer : results) {
-            int arrowSize = (int) dpToPx(100);
-            int screenWidth = getResources().getDisplayMetrics().widthPixels;
-            int screenHeight = getResources().getDisplayMetrics().heightPixels;
-            float radius = screenWidth / 2 - arrowSize / 2;
+            int centerX = Utils.getCenterX(getActivity());
+            int centerY = Utils.getCenterY(getActivity());
 
-            int centerX = screenWidth / 2;
-            int centerY = screenHeight / 2 - 60;
+            int arrowSize = (int) Utils.dpToPx(getActivity(), 100);
+            int screenWidth = getResources().getDisplayMetrics().widthPixels;
+            float radius = screenWidth / 2 - arrowSize / 2;
 
             //calculate direction
             float direction = buffer.direction;
@@ -202,7 +199,7 @@ public class ResultFragment extends Fragment {
             float viewWidth = buffer.text.getMeasuredWidth();
             float viewHeight = buffer.text.getMeasuredHeight();
 
-            radius = screenWidth / 2 - arrowSize / 2 - dpToPx(15);
+            radius = screenWidth / 2 - arrowSize / 2 - Utils.dpToPx(getActivity(), 15);
             x = (float) (radius * Math.sin(relativeDirection));
             y = (float) (radius * Math.cos(relativeDirection));
             params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -263,11 +260,6 @@ public class ResultFragment extends Fragment {
         return color;
     }
 
-    private float dpToPx(float dp) {
-        Resources r = getResources();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics
-                ());
-    }
 
     protected void onDeviceClicked(ResultBuffer clicked) {
         //reset previous arrow

@@ -1,5 +1,6 @@
 package edu.kit.teco.radarbeacon.evaluation;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,12 +54,10 @@ public class CircleUtils {
      * better understanding, values are still in radians).
      */
     public static double getMeanAngle(double firstAngle, double secondAngle) {
-        //averaging over the border of pi/minus pi:
-        if (abs(firstAngle - secondAngle) > Math.PI) {
-            //average and project to opposite
-            return getOpposing(firstAngle + secondAngle) / 2;
-        }
-        return (firstAngle + secondAngle) / 2;
+        ArrayList<Double> list = new ArrayList<>();
+        list.add(firstAngle);
+        list.add(secondAngle);
+        return getMeanAngle(list);
     }
 
     /**
@@ -123,18 +122,73 @@ public class CircleUtils {
     }
 
     public static double getCircleMedian(List<Double> angles) {
-        //TODO
-        double diameter;
-        double diameterAdj;
+        double diameter = getMeanAngle(angles);
+        double diameterAdj = getOpposing(diameter);
 
         Collections.sort(angles);
 
         //find the diameter so is divides the angles in half
         if (angles.size() % 2 == 0) { //even
+            //iterate over midpoints of two points each, then test if exactly half of them are on each side
+            for (int i = 0; i < angles.size(); i++) {
+                double angle1 = angles.get(i);
+                double angle2 = angles.get((i + 1) % angles.size());
+                double a = getMeanAngle(angle1, angle2);
 
+                int count = 0;
+                for (Double b : angles) {
+                    if (isToRight(a, b)) {
+                        count++;
+                    }
+                }
+                if (count == angles.size() / 2) {
+                    diameter = a;
+                    diameterAdj = getOpposing(a);
+                    break;
+                }
+            }
         } else { //odd
-
+            //iterate over angles, then test if exactly half of them are on each side
+            for (Double a : angles) {
+                int count = 0;
+                for (Double b : angles) {
+                    if (a == b) {
+                        continue;
+                    }
+                    if (isToRight(a, b)) {
+                        count++;
+                    }
+                }
+                if (count == angles.size() / 2) {
+                    diameter = a;
+                    diameterAdj = getOpposing(a);
+                    break;
+                }
+            }
         }
-        return 0;
+        //check if diameter or diameterAdj is closer to mean angle
+        double mean = getMeanAngle(angles);
+        if (getCircleDistance(mean, diameter) <= getCircleDistance(mean, diameterAdj)) {
+            return diameter;
+        } else {
+            return diameterAdj;
+        }
+    }
+
+    /**
+     * Returns true, iff angle b is in the right semicircle defined by the diameter through angle
+     * a, false otherwise. Angle a and the one opposing to a do not belong to the semisphere.
+     *
+     * @param a the angle spanning the diameter
+     * @param b the angle to test
+     */
+    public static boolean isToRight(double a, double b) {
+        //transform so a is at zero
+        double normalB = b - a;
+        if (normalB < -PI) {
+            normalB += 2 * PI;
+        }
+
+        return normalB > 0 && normalB < PI;
     }
 }

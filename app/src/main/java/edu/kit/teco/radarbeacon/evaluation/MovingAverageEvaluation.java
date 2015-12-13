@@ -131,19 +131,12 @@ public class MovingAverageEvaluation implements EvaluationStrategy {
             maximums.add(max);
             smoothValues.remove(max);
         }
-        //get median
-        //sort again
-        Collections.sort(maximums, compareByAzimuth);
-        float median;
-        if (maximums.size() % 2 == 0) {
-            median = (maximums.get(maximums.size() / 2 - 1).azimuth + maximums.get(maximums.size() /
-                    2)
-                    .azimuth) / 2;
-        } else {
-            median = maximums.get(maximums.size() / 2).azimuth;
+        //get median of maximums
+        ArrayList<Double> angleList = new ArrayList<>();
+        for (AvgSample avgSample : maximums) {
+            angleList.add((double) avgSample.azimuth);
         }
-
-        return median;
+        return (float) CircleUtils.getCircleMedian(angleList);
     }
 
     @Override

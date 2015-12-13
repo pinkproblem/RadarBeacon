@@ -53,7 +53,8 @@
             android:text="Medium Text"
             android:id="@+id/result_mac"
             android:layout_below="@+id/result_name"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:textSize="15sp"/>
 
         <TextView
             android:layout_width="wrap_content"

@@ -54,7 +54,7 @@ public class MeasureDrawable extends View {
         int centerY = Utils.getCenterY(context);
         int width = (int) (screenWidth * 0.95);
         //int innerRadius = (int) (screenWidth * 0.3);
-        int ringWidth = (int) Utils.dpToPx(context, 70);
+        int ringWidth = (int) Utils.dpToPx(context, 60);
         int innerRadius = width / 2 - ringWidth;
 
         top = centerY - width / 2;

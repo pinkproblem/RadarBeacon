@@ -78,11 +78,11 @@ public class MeasureFragment extends Fragment {
 
         int centerX = Utils.getCenterX(getActivity());
         int centerY = Utils.getCenterY(getActivity());
-        int markSize = (int) Utils.dpToPx(getActivity(), 100);
-        int screenHeight = getActivity().getResources().getDisplayMetrics().heightPixels;
+        int markSize = (int) Utils.dpToPx(getActivity(), 80);
+        int screenWidth = getActivity().getResources().getDisplayMetrics().widthPixels;
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(markSize, markSize);
         params.leftMargin = (int) (centerX - markSize / 2);
-        params.topMargin = (int) (centerY - 0.95 * screenHeight - 10);
+        params.topMargin = (int) (centerY - 0.95 * (screenWidth / 2) - 12);
         mark.setLayoutParams(params);
 
         return view;

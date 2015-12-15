@@ -126,7 +126,9 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(StartMenuActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            return false;
         }
 
         return super.onOptionsItemSelected(item);

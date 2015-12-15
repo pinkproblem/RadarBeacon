@@ -124,9 +124,9 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
         } else if (fragment == measureFragment) {
             currentFragment = measureFragment;
 
-            SharedPreferences preferences = getSharedPreferences(TutorialDialog
+            SharedPreferences preferences = getSharedPreferences(SettingsFragment
                     .PREF_TUT_MEASURE, 0);
-            boolean showTutorial = preferences.getBoolean(TutorialDialog.PREF_TUT_MEASURE, true);
+            boolean showTutorial = preferences.getBoolean(SettingsFragment.PREF_TUT_MEASURE, true);
 
             if (showTutorial) {
                 stopMeasurement();
@@ -148,7 +148,7 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
 
                 String button = getString(R.string.go);
                 String title = getString(R.string.measurement);
-                DialogFragment dialog = TutorialDialog.getInstance(TutorialDialog
+                DialogFragment dialog = TutorialDialog.getInstance(SettingsFragment
                                 .PREF_TUT_MEASURE, text, button,
                         title);
                 dialog.show(getFragmentManager(), "measure_tutorial");

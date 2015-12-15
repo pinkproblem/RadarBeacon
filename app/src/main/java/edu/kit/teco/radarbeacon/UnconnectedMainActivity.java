@@ -47,9 +47,9 @@ public class UnconnectedMainActivity extends MainBaseActivity {
     protected void onStart() {
         super.onStart();
 
-        SharedPreferences preferences = getSharedPreferences(TutorialDialog
+        SharedPreferences preferences = getSharedPreferences(SettingsFragment
                 .PREF_TUT_MEASURE, 0);
-        boolean showTutorial = preferences.getBoolean(TutorialDialog.PREF_TUT_MEASURE, true);
+        boolean showTutorial = preferences.getBoolean(SettingsFragment.PREF_TUT_MEASURE, true);
 
         if (!showTutorial) {
             startMeasurement();

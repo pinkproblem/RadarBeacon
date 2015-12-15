@@ -3,6 +3,7 @@ package edu.kit.teco.radarbeacon;
 import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -35,9 +36,10 @@ public class ConnectedMainActivity extends MainBaseActivity implements Connectio
         super.onStart();
         connectionManager.connect();
 
-        SharedPreferences preferences = getSharedPreferences(TutorialDialog
+        SharedPreferences preferences = getSharedPreferences(SettingsFragment
                 .PREF_TUT_MEASURE, 0);
-        boolean showTutorial = preferences.getBoolean(TutorialDialog.PREF_TUT_MEASURE, true);
+        boolean showTutorial = preferences.getBoolean(SettingsFragment.PREF_TUT_MEASURE, true);
+        Log.d("iris", "boolean" + showTutorial);
 
         //if all devices are already connecting, start measuring
         if (connectionManager.getConnectedDevices().size() == devices.size() && !showTutorial) {
@@ -55,11 +57,13 @@ public class ConnectedMainActivity extends MainBaseActivity implements Connectio
     @Override
     protected void startMeasurement() {
         connectionManager.startMeasurement();
+        Log.d("iris", "start measurement");
     }
 
     @Override
     protected void stopMeasurement() {
         connectionManager.stopMeasurement();
+        Log.d("iris", "stop measurement");
     }
 
     @Override

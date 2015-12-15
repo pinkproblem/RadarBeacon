@@ -79,12 +79,12 @@ public class ResultFragment extends Fragment {
                         updateView();
 
                         SharedPreferences preferences = getActivity().getSharedPreferences
-                                (TutorialDialog
+                                (SettingsFragment
                                         .PREF_TUT_RESULT, 0);
-                        boolean showTutorial = preferences.getBoolean(TutorialDialog.PREF_TUT_RESULT,
+                        boolean showTutorial = preferences.getBoolean(SettingsFragment.PREF_TUT_RESULT,
                                 true);
                         if (showTutorial) {
-                            TutorialDialog.getInstance(TutorialDialog
+                            TutorialDialog.getInstance(SettingsFragment
                                     .PREF_TUT_RESULT, getString(R.string.tutorial_result)).show
                                     (getFragmentManager(), "tutresult");
                         }

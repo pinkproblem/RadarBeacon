@@ -19,9 +19,6 @@ import android.widget.TextView;
  */
 public class TutorialDialog extends DialogFragment {
 
-    public static final String PREF_TUT_MEASURE = "preftutmeasure";
-    public static final String PREF_TUT_RESULT = "preftutresult";
-
     private String preference;
 
     private SpannableStringBuilder text;

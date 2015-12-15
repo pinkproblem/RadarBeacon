@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -155,6 +156,7 @@ public class ConnectionManager {
         @Override
         public void onReadRemoteRssi(BluetoothGatt gatt, final int rssi, int status) {
             super.onReadRemoteRssi(gatt, rssi, status);
+            Log.d("iris", "result");
             if (!connectionRunning || !measurementRunning) {
                 return;
             }
@@ -170,6 +172,7 @@ public class ConnectionManager {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("iris", "start next");
                     nextGatt.readRemoteRssi();
                 }
             };

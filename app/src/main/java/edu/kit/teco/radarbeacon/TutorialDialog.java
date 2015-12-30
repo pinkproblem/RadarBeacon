@@ -86,7 +86,7 @@ public class TutorialDialog extends DialogFragment {
         return builder.create();
     }
 
-    public static SpannableString createIndentedText(String text, int marginFirstLine, int
+    public static SpannableString createIndentedText(CharSequence text, int marginFirstLine, int
             marginNextLines) {
         SpannableString result = new SpannableString(text);
         result.setSpan(new LeadingMarginSpan.Standard(marginFirstLine, marginNextLines), 0, text.length(), 0);

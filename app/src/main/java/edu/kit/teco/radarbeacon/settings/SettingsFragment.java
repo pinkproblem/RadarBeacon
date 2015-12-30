@@ -1,7 +1,9 @@
-package edu.kit.teco.radarbeacon;
+package edu.kit.teco.radarbeacon.settings;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import edu.kit.teco.radarbeacon.R;
 
 /**
  * Created by Iris on 15.12.2015.

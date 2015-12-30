@@ -4,12 +4,11 @@ import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import java.util.HashMap;
 
 import edu.kit.teco.radarbeacon.evaluation.MovingAverageEvaluation;
+import edu.kit.teco.radarbeacon.settings.SettingsFragment;
 
 public class ConnectedMainActivity extends MainBaseActivity implements ConnectionManager.ConnectionListener {
 
@@ -64,28 +63,6 @@ public class ConnectedMainActivity extends MainBaseActivity implements Connectio
     protected void stopMeasurement() {
         connectionManager.stopMeasurement();
         Log.d("iris", "stop measurement");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_connected_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

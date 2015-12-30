@@ -19,10 +19,10 @@
     <string name="mac">MAC</string>
     <string name="tutorial_dont_show_again">Don\'t show again</string>
     <string name="ok">Okay</string>
-    <string name="tutorial_measure_1">To perform the locating, please follow these
-        steps:\n\n</string>
-    <string name="tutorial_measure_2">\u2022 Hold your device about horizontally\n</string>
-    <string name="tutorial_measure_3">\u2022 Stand up\n</string>
+    <string name="tutorial_measure_1">To perform the locating, <b>please follow these
+        steps</b>:\n\n</string>
+    <string name="tutorial_measure_2">\u2022 Stand up\n</string>
+    <string name="tutorial_measure_3">\u2022 Hold your device about horizontally\n</string>
     <string name="tutorial_measure_4">\u2022 Spin round slowly until all sections are green</string>
     <string name="go">Go!</string>
     <string name="measurement">Measurement</string>

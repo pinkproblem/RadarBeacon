@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -25,6 +26,8 @@ import edu.kit.teco.radarbeacon.compass.CompassManager;
 import edu.kit.teco.radarbeacon.compass.RotationChangeListener;
 import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
+import edu.kit.teco.radarbeacon.settings.SettingsActivity;
+import edu.kit.teco.radarbeacon.settings.SettingsFragment;
 
 public abstract class MainBaseActivity extends AppCompatActivity implements RotationChangeListener,
         MeasureFragment.OnMeasureCompleteListener,
@@ -103,7 +106,9 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return false;
         }
 
         return super.onOptionsItemSelected(item);
@@ -130,21 +135,17 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
 
             if (showTutorial) {
                 stopMeasurement();
-                String text1 = getString(R.string.tutorial_measure_1);
+                CharSequence text1 = getText(R.string.tutorial_measure_1);
                 String text2 = getString(R.string.tutorial_measure_2);
                 String text3 = getString(R.string.tutorial_measure_3);
                 String text4 = getString(R.string.tutorial_measure_4);
 
-                SpannableString ss1 = TutorialDialog.createIndentedText(text1, 0, 0);
                 SpannableString ss2 = TutorialDialog.createIndentedText(text2, 50, 65);
                 SpannableString ss3 = TutorialDialog.createIndentedText(text3, 50, 65);
                 SpannableString ss4 = TutorialDialog.createIndentedText(text4, 50, 65);
 
                 SpannableStringBuilder text = new SpannableStringBuilder();
-                text.append(ss1);
-                text.append(ss2);
-                text.append(ss3);
-                text.append(ss4);
+                text.append(text1).append(ss2).append(ss3).append(ss4);
 
                 String button = getString(R.string.go);
                 String title = getString(R.string.measurement);

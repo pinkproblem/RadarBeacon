@@ -1,4 +1,4 @@
-package edu.kit.teco.radarbeacon;
+package edu.kit.teco.radarbeacon.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import edu.kit.teco.radarbeacon.R;
 
 /**
  * Created by Iris on 15.12.2015.

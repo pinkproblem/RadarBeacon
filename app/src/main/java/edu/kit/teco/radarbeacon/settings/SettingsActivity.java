@@ -1,4 +1,4 @@
-package edu.kit.teco.radarbeacon;
+package edu.kit.teco.radarbeacon.settings;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

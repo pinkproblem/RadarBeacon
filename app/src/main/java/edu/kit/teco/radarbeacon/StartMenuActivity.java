@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import edu.kit.teco.radarbeacon.settings.SettingsActivity;
+
 public class StartMenuActivity extends AppCompatActivity implements SelectDeviceDialog.OnConfirmSelectionListener {
 
     //name of the intent extra of the passed devices
@@ -126,7 +128,7 @@ public class StartMenuActivity extends AppCompatActivity implements SelectDevice
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(StartMenuActivity.this, SettingsActivity.class);
+            Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return false;
         }

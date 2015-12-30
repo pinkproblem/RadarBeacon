@@ -20,6 +20,7 @@ import edu.kit.teco.radarbeacon.animation.RadarRevealAnimation;
 import edu.kit.teco.radarbeacon.evaluation.CircleUtils;
 import edu.kit.teco.radarbeacon.evaluation.EvaluationStrategy;
 import edu.kit.teco.radarbeacon.evaluation.InsufficientInputException;
+import edu.kit.teco.radarbeacon.settings.SettingsFragment;
 
 public class ResultFragment extends Fragment {
 

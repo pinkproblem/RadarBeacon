@@ -73,7 +73,9 @@ public class ConnectedMainActivity extends MainBaseActivity implements Connectio
                 //add the value for evaluation
                 addSample(device, rssi);
                 //add for measure fragment
-                measureFragment.addSample(getAzimuth(), rssi);
+                if (currentFragment == measureFragment) {
+                    measureFragment.addSample(getAzimuth(), rssi);
+                }
             }
         });
     }

@@ -37,4 +37,10 @@ public interface EvaluationStrategy {
      * @return distance to remote device
      */
     public double getDistance();
+
+    /**
+     * Returns a smooth distance value to the remote device based on the last few values recorded
+     * . Is not exact but pretty to show and lokks stable.
+     */
+    double getSmoothDistance();
 }

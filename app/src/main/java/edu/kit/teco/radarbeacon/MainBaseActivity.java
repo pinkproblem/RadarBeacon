@@ -121,11 +121,11 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
             currentFragment = resultFragment;
 
             //push results to fragment
-            HashMap<BluetoothDevice, EvaluationStrategy> results = new HashMap<>();
-            for (BluetoothDevice device : evaluation.keySet()) {
-                results.put(device, evaluation.get(device));
-            }
-            resultFragment.updateResults(results);
+//            HashMap<BluetoothDevice, EvaluationStrategy> results = new HashMap<>();
+//            for (BluetoothDevice device : evaluation.keySet()) {
+//                results.put(device, evaluation.get(device));
+//            }
+            resultFragment.updateResults(evaluation);
         } else if (fragment == measureFragment) {
             currentFragment = measureFragment;
 
@@ -220,21 +220,6 @@ public abstract class MainBaseActivity extends AppCompatActivity implements Rota
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
         });
-
-        //stop scanning
-        stopMeasurement();
-
-        //push results to fragment
-//        HashMap<BluetoothDevice, Float> results = new HashMap<>();
-//        for (BluetoothDevice device : evaluation.keySet()) {
-//            try {
-//                float azimuthRes = evaluation.get(device).calculate();
-//                results.put(device, azimuthRes);
-//            } catch (InsufficientInputException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        resultFragment.updateResults(results);
     }
 
     public void restartMeasure(View view) {

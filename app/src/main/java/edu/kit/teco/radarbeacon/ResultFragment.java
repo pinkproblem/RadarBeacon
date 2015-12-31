@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ public class ResultFragment extends Fragment {
     ResultBuffer current;
     private float smoothAzimuth;
 
+    private Handler distanceUpdateHandler;
+
     private RelativeLayout relativeLayout;
     private RelativeLayout infoRelativeLayout;
     private TextView textName;
@@ -42,6 +45,7 @@ public class ResultFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        distanceUpdateHandler = new Handler();
         showAnimation = true;
     }
 
@@ -194,6 +198,10 @@ public class ResultFragment extends Fragment {
 
 
             //distances
+            String text = String.format("%.1f", buffer.evaluationStrategy.getSmoothDistance()) +
+                    "m";
+            buffer.text.setText(text);
+
             buffer.text.setRotation(dirDegree);
 
             buffer.text.measure(0, 0);

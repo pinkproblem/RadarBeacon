@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import static java.lang.Math.PI;
-import static java.lang.Math.min;
+import static java.lang.Math.max;
 import static java.lang.Math.pow;
 
 /**
@@ -18,6 +18,9 @@ import static java.lang.Math.pow;
  * one and so on.
  */
 public class MovingAverageEvaluation implements EvaluationStrategy {
+
+    //number of the values used to smooth e.g. the distance values
+    public static final int smoothWidth = 20;
 
     /*decides how many values should be averaged each time, e.g. 0.5 means with 20 values that
     each smoothed point averages 10 original points.*/
@@ -150,8 +153,8 @@ public class MovingAverageEvaluation implements EvaluationStrategy {
 
         //to make it more dynamic, lets say the maximum of the last x values
         int maxRssi = Integer.MIN_VALUE;
-        final int lookupWidth = 15;
-        for (int i = min(samples.size() - lookupWidth, 0); i < samples.size(); i++) {
+        final int lookupWidth = 1;//TODO test value
+        for (int i = max(samples.size() - lookupWidth, 0); i < samples.size(); i++) {
             Sample s = samples.get(i);
             int rssi = s.getRssi();
             if (rssi > maxRssi) {
@@ -160,6 +163,28 @@ public class MovingAverageEvaluation implements EvaluationStrategy {
         }
 
         return rssiToDistance(maxRssi);
+    }
+
+    @Override
+    public double getSmoothDistance() {
+        if (samples.size() == 0) {
+            return 0;
+        }
+
+        //extract last x values
+        ArrayList<Double> distances = new ArrayList<>();
+        for (int i = max(samples.size() - smoothWidth, 0); i < samples.size(); i++) {
+            distances.add(rssiToDistance(samples.get(i).getRssi()));
+        }
+        //TODO remove smallest values
+
+        //TODO something prettier than this
+        double sum = 0;
+        for (int i = 0; i < distances.size(); i++) {
+            sum += distances.get(i);
+        }
+        double res = sum / distances.size();
+        return res;
     }
 
     //aus dem praktikum
